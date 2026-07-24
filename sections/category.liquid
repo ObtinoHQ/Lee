@@ -1,0 +1,290 @@
+{%- style -%}
+  .l-cat-section-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    background-color: {{ section.settings.bg_color }};
+    overflow: hidden; /* Prevents horizontal scrollbar on the page body */
+  }
+
+  /* --- YOUR REQUESTED IMAGE CSS --- */
+  .athlete-image-wrapper-{{ section.id }} {
+    position: relative;
+    width: 100%;
+    padding-bottom: 125%; /* 4:5 Aspect Ratio */
+    overflow: hidden;
+    border-radius: 5px;
+    background-color: {{ section.settings.card_bg }};
+  }
+
+  .athlete-image-wrapper-{{ section.id }} img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .swiper-container-{{ section.id }} {
+    width: 100%;
+  }
+
+  /* --- FALLBACK CSS: Runs before Swiper JS loads --- */
+  .swiper:not(.swiper-initialized) .swiper-wrapper {
+    display: flex;
+    gap: {{ section.settings.gap }}px;
+    overflow: hidden; /* Keeps it contained */
+    flex-wrap: nowrap;
+    /* Simulate the padding logic roughly for visual stability */
+    padding-left: 30px; 
+    padding-right: 30px;
+    box-sizing: border-box;
+  }
+  
+  /* Mobile Fallback Padding */
+  @media screen and (max-width: 768px) {
+    .swiper:not(.swiper-initialized) .swiper-wrapper {
+        padding-left: 10px; 
+        padding-right: 10px;
+    }
+  }
+
+  .swiper:not(.swiper-initialized) .swiper-slide {
+    display: block;
+    flex-shrink: 0;
+    /* Calculate width based on desktop setting */
+    width: calc( (100% - ({{ section.settings.gap }}px * {{ section.settings.slides_desktop | minus: 1 }})) / {{ section.settings.slides_desktop }} );
+  }
+
+  @media screen and (max-width: 1024px) {
+    .swiper:not(.swiper-initialized) .swiper-slide {
+       /* Calculate width based on tablet setting */
+       width: calc( (100% - ({{ section.settings.gap }}px * {{ section.settings.slides_tablet | minus: 1 }})) / {{ section.settings.slides_tablet }} );
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .swiper:not(.swiper-initialized) .swiper-slide {
+       /* Calculate width based on mobile setting */
+       width: calc( (100% - ({{ section.settings.gap }}px * {{ section.settings.slides_mobile | minus: 1 }})) / {{ section.settings.slides_mobile }} );
+    }
+  }
+  /* --- END FALLBACK CSS --- */
+
+  .swiper-slide {
+    height: auto; /* Let content dictate height */
+  }
+
+  .l-cat-main-title-{{ section.id }} {
+    font-size: {{ section.settings.title_size }}px;
+    margin: 0;
+    font-family: Bebas Neue, sans-serif;
+    font-weight: 400;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  .l-cat-label-{{ section.id }} {
+    font-size: {{ section.settings.label_size }}px;
+    font-family: Instrument Sans, sans-serif;
+    font-weight: 500;
+    line-height: 100%;
+    margin-top: 10px;
+    text-align: center;
+    color: #000; 
+        text-transform: uppercase;
+  }
+
+  .l-cat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+  .l-cat-title-group { display: flex; align-items: center; gap: 15px; }
+  .l-cat-nav-wrap { display: flex; }
+
+  .l-cat-arrow { 
+    cursor: pointer; 
+    width: 40px; 
+    height: 40px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    background: transparent; 
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    border: none;
+  }
+  
+  .l-cat-card { text-decoration: none; display: block; text-align: center; color: inherit; }
+
+@media screen and (max-width: 800px) {
+  .l-cat-title-group { flex-direction: column; gap: 0px; align-items: start;}
+
+  .l-cat-main-title-{{ section.id }} {
+    font-size: 28px;
+  }
+  .l-cat-section-{{ section.id }} {
+    padding-top: calc({{ section.settings.padding_top }}px / 2);
+    padding-bottom: calc({{ section.settings.padding_bottom }}px / 2);
+  }
+
+}
+
+{%- endstyle -%}
+
+<div class="l-cat-section-{{ section.id }}" id="Slider-{{ section.id }}" data-section-id="{{ section.id }}">
+  <div class="container-x l-cat-header-container">
+    <div class="l-cat-header">
+      <div class="l-cat-title-group">
+        <h2 class="l-cat-main-title-{{ section.id }}">{{ section.settings.title }}</h2>
+        {% if section.settings.view_all_link != blank %}
+          <a href="{{ section.settings.view_all_link }}" class="view-all">{{ section.settings.view_all_text }}</a>
+        {% endif %}
+      </div>
+        <div class="l-cat-nav-wrap">
+        <div class="l-cat-arrow l-cat-prev-{{ section.id }}" aria-label="Previous slide">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M20 12L4 12M4 12L10 6M4 12L10 18" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+        <div class="l-cat-arrow l-cat-next-{{ section.id }}" aria-label="Next slide">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M4 12L20 12M20 12L14 18M20 12L14 6" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="swiper swiper-container-{{ section.id }}" 
+       data-desktop="{{ section.settings.slides_desktop }}" 
+       data-tablet="{{ section.settings.slides_tablet }}" 
+       data-mobile="{{ section.settings.slides_mobile }}" 
+       data-gap="{{ section.settings.gap }}">
+    <div class="swiper-wrapper">
+      {% for block in section.blocks %}
+        <div class="swiper-slide" {{ block.shopify_attributes }}>
+          <a href="{{ block.settings.link }}" class="l-cat-card">
+            <div class="athlete-image-wrapper-{{ section.id }}">
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 1800 | image_tag: loading: 'lazy', class: 'l-cat-img' }}
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
+            </div>
+            {% if block.settings.show_label %}
+                <p class="l-cat-label-{{ section.id }}">{{ block.settings.title }}</p>
+            {% endif %}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  var initCategorySwiper_{{ section.id | replace: '-', '_' }} = (section) => {
+    const swiperEl = section.querySelector('.swiper');
+    const container = section.querySelector('.l-cat-header-container');
+    
+    if (!swiperEl || !container) return;
+
+    const setSwiperPadding = () => {
+        const offset = container.getBoundingClientRect().left;
+        
+        // Check if we are on mobile (less than 768px)
+        const isMobile = window.innerWidth < 800;
+        
+        // Set minimum padding: 10px for mobile, 30px for desktop
+        const minPadding = isMobile ? 10 : 30;
+        
+        // Use the container offset, but ensure it's never less than our minimum
+        const finalOffset = offset > minPadding ? offset : minPadding;
+
+        swiperEl.style.paddingLeft = `${finalOffset}px`;
+        swiperEl.style.paddingRight = `${finalOffset}px`; 
+    };
+
+    setSwiperPadding();
+    window.addEventListener('resize', setSwiperPadding);
+
+    const { desktop, tablet, mobile, gap } = swiperEl.dataset;
+
+    new Swiper(swiperEl, {
+      slidesPerView: parseFloat(mobile),
+      spaceBetween: parseInt(gap),
+      loop: true, 
+      grabCursor: true,
+      centeredSlides: false, 
+      navigation: {
+        nextEl: section.querySelector('.l-cat-next-{{ section.id }}'),
+        prevEl: section.querySelector('.l-cat-prev-{{ section.id }}'),
+      },
+      breakpoints: {
+        768: { 
+            slidesPerView: parseFloat(tablet),
+            spaceBetween: parseInt(gap) 
+        },
+        1024: { 
+            slidesPerView: parseFloat(desktop),
+            spaceBetween: parseInt(gap)
+        }
+      }
+    });
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const section = document.querySelector('#Slider-{{ section.id }}');
+    if (section) initCategorySwiper_{{ section.id | replace: '-', '_' }}(section);
+  });
+
+  document.addEventListener('shopify:section:load', (event) => {
+    if (event.detail.sectionId === '{{ section.id }}') {
+      initCategorySwiper_{{ section.id | replace: '-', '_' }}(event.target);
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Insta Infinite Slider",
+  "settings": [
+    { "type": "header", "content": "Content Settings" },
+    { "type": "text", "id": "title", "label": "Heading", "default": "FOLLOW US ON INSTAGRAM" },
+    { "type": "url", "id": "view_all_link", "label": "View All Link" },
+    { "type": "text", "id": "view_all_text", "label": "View All Link Text", "default": "@luxiaojuneurope" },
+    { "type": "range", "id": "padding_top", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "Padding Top", "default": 50 },
+    { "type": "range", "id": "padding_bottom", "min": 0, "max": 100, "step": 5, "unit": "px", "label": "Padding Bottom", "default": 50 },
+    { "type": "header", "content": "Styling" },
+    { "type": "color", "id": "bg_color", "label": "Section Background", "default": "#ffffff" },
+    { "type": "color", "id": "card_bg", "label": "Card Background", "default": "#f6f6f6" },
+    { "type": "range", "id": "title_size", "min": 16, "max": 80, "step": 1, "unit": "px", "label": "Heading Font Size", "default": 48 },
+    { "type": "range", "id": "label_size", "min": 10, "max": 20, "step": 1, "unit": "px", "label": "Label Size", "default": 13 },
+    { "type": "header", "content": "Swiper Settings" },
+    { "type": "range", "id": "slides_desktop", "min": 1, "max": 6, "step": 0.1, "label": "Slides per view (Desktop)", "default": 4.5 },
+    { "type": "range", "id": "slides_tablet", "min": 1, "max": 4, "step": 0.1, "label": "Slides per view (Tablet)", "default": 2.5 },
+    { "type": "range", "id": "slides_mobile", "min": 1, "max": 3, "step": 0.1, "label": "Slides per view (Mobile)", "default": 1.2 },
+    { "type": "range", "id": "gap", "min": 0, "max": 50, "step": 5, "unit": "px", "label": "Gap between slides", "default": 15 }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Image",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "title", "label": "Label (Optional)", "default": "Post" },
+        { "type": "checkbox", "id": "show_label", "label": "Show Label", "default": false },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Insta Infinite Slider",
+      "blocks": [
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" }
+      ]
+    }
+  ]
+}
+{% endschema %}

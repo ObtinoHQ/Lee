@@ -1,0 +1,227 @@
+{%- comment -%}
+  UPDATED GIFT CARD OPTION BLOCK
+  Fixes: 1. Connects inputs to the main product form. 2. Hides the double checkbox.
+{%- endcomment -%}
+
+<div class="gift-card-options-container">
+  
+  <label class="gift-toggle-wrapper">
+    <input type="checkbox" id="gift-card-toggle" class="gift-toggle-checkbox" style="display:none;">
+    
+    <span class="gift-toggle-fake-checkbox">
+      <svg class="checkmark-icon" viewBox="0 0 24 24">
+        <path fill="none" stroke="white" stroke-width="3" d="M4 12 l5 5 l11 -11"></path>
+      </svg>
+    </span>
+    <span class="gift-toggle-label">{{ block.settings.toggle_label | default: "Send this as a gift?" }}</span>
+  </label>
+
+  <div id="gift-card-fields" class="gift-fields-wrapper">
+    
+    <p class="gift-helper-text">
+      {{ block.settings.helper_text | default: "We'll send the gift card code directly to the recipient's email entered below." }}
+    </p>
+
+    <div class="gift-field-row">
+      <div class="gift-field-group">
+        <label for="recipient-name" class="gift-label">{{ block.settings.label_name | default: "Recipient Name" }}</label>
+        <input type="text" 
+               id="recipient-name" 
+               name="properties[Recipient Name]" 
+               form="{{ 'product-form-' | append: section.id }}"
+               placeholder="{{ block.settings.placeholder_name | default: 'e.g. Lu Xiaojun' }}">
+      </div>
+      
+      <div class="gift-field-group">
+        <label for="recipient-email" class="gift-label">{{ block.settings.label_email | default: "Recipient Email" }} <span class="required-star">*</span></label>
+        <input type="email" 
+               id="recipient-email" 
+               name="properties[Recipient Email]" 
+               form="{{ 'product-form-' | append: section.id }}"
+               placeholder="{{ block.settings.placeholder_email | default: 'name@example.com' }}">
+      </div>
+    </div>
+
+    <div class="gift-field-group">
+      <label for="gift-message" class="gift-label">{{ block.settings.label_message | default: "Message (Optional)" }}</label>
+      <textarea id="gift-message" 
+                name="properties[Gift Message]" 
+                rows="3" 
+                form="{{ 'product-form-' | append: section.id }}"
+                placeholder="{{ block.settings.placeholder_message | default: 'Hope you hit a new PR! 💪' }}"></textarea>
+    </div>
+
+    <div class="gift-field-group">
+      <label for="delivery-date" class="gift-label">{{ block.settings.label_date | default: "Scheduled Delivery" }}</label>
+      <input type="date" 
+             id="delivery-date" 
+             name="properties[Delivery Date]"
+             form="{{ 'product-form-' | append: section.id }}">
+      <span class="gift-micro-text">{{ block.settings.help_date | default: "Leave blank to send immediately." }}</span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('gift-card-toggle');
+    const fields = document.getElementById('gift-card-fields');
+    const emailInput = document.getElementById('recipient-email');
+
+    // Logic to show/hide and toggle "Required" status
+    toggle.addEventListener('change', function() {
+      if(this.checked) {
+        fields.classList.add('is-visible');
+        emailInput.setAttribute('required', 'true');
+      } else {
+        fields.classList.remove('is-visible');
+        emailInput.removeAttribute('required');
+        
+        // Optional: Clear fields if they uncheck the box
+        // document.querySelectorAll('.gift-fields-wrapper input').forEach(i => i.value = '');
+      }
+    });
+  });
+</script>
+
+<style>
+/* Container */
+.gift-card-options-container {
+  margin: 20px 0;
+  font-family: inherit;
+}
+
+/* Toggle Switch Styles */
+.gift-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 12px;
+  user-select: none;
+}
+
+/* HIDE the default ugly checkbox completely */
+.gift-toggle-checkbox {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* The Custom Box */
+.gift-toggle-fake-checkbox {
+  width: 22px;
+  height: 22px;
+  background-color: #fff;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* Checked State - Brand Red */
+.gift-toggle-checkbox:checked + .gift-toggle-fake-checkbox {
+  background-color: #D32F2F; 
+  border-color: #D32F2F;
+}
+
+.checkmark-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.2s;
+}
+
+.gift-toggle-checkbox:checked + .gift-toggle-fake-checkbox .checkmark-icon {
+  opacity: 1; /* Show when checked */
+}
+
+.gift-toggle-label {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #222;
+}
+
+/* Form Container Animation */
+.gift-fields-wrapper {
+  background-color: #F8F8F8; /* Light grey background */
+  border: 1px solid #E5E5E5;
+  border-radius: 8px;
+  padding: 0 20px;
+  max-height: 0; /* Collapsed */
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gift-fields-wrapper.is-visible {
+  padding: 24px 20px; /* Add padding when open */
+  max-height: 600px; /* Big enough to fit content */
+  opacity: 1;
+  margin-top: 10px;
+}
+
+.gift-helper-text {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
+
+/* Inputs Layout */
+.gift-field-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.gift-field-group {
+  flex: 1;
+  margin-bottom: 15px;
+}
+
+.gift-label {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.required-star { color: #D32F2F; }
+
+.gift-field-group input,
+.gift-field-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1.25rem;
+  background: #fff;
+  font-family: inherit;
+}
+
+.gift-field-group input:focus,
+.gift-field-group textarea:focus {
+  border-color: #D32F2F;
+  outline: none;
+}
+
+.gift-micro-text {
+  font-size: 1.5rem;
+  color: #888;
+  margin-top: 5px;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .gift-field-row { flex-direction: column; gap: 0; }
+}
+</style>

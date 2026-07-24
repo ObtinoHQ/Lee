@@ -1,0 +1,103 @@
+
+
+{%- assign threshold = settings.threshold_amount | times: 100 -%}
+{%- assign cart_total = cart.total_price -%}
+{%- assign remaining_amount = threshold | minus: cart_total -%}
+
+{%- assign percent = cart_total | times: 100.0 | divided_by: threshold -%}
+{%- if percent > 100 -%}{%- assign percent = 100 -%}{%- endif -%}
+
+<div class="fsb-section">
+  <div class="fsb-container">
+    
+    {% if remaining_amount > 0 %}
+      <p class="fsb-text">
+        {{ settings.text_prefix }} 
+        <span class="fsb-money">{{ remaining_amount | money }}</span> 
+        {{ settings.text_suffix }}
+      </p>
+    {% else %}
+      <p class="fsb-text fsb-success">
+        {{ settings.text_success }}
+      </p>
+    {% endif %}
+
+    <div class="fsb-progress-track">
+      <div class="fsb-progress-fill" style="width: {{ percent }}%;">
+        
+        {% if settings.progress_icon != blank %}
+          <div class="fsb-icon-wrapper">
+             <img src="{{ settings.progress_icon | image_url: width: 40 }}" alt="Shipping Status">
+          </div>
+        {% endif %}
+        </div>
+    </div>
+
+  </div>
+</div>
+
+{% style %}
+  .fsb-section {
+    background-color: {{ settings.bg_color }};
+    padding: 0 15px 15px;
+  }
+  .fsb-section * {
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  span.fsb-money {
+    font-weight: 600;
+    color: #d32f2f;
+  }
+  .fsb-text {
+    margin: 0 0 15px 0; 
+    color: {{ settings.text_color_free }};
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-align: center;
+  }
+
+  .fsb-progress-track {
+    width: 100%;
+    height: 6px;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 10px;
+    margin: 0 auto;
+    position: relative; /* Essential for alignment */
+    overflow: visible;  /* Essential so the icon doesn't get cut off */
+  }
+
+  .fsb-progress-fill {
+    height: 100%;
+    background-color: {{ settings.bar_color }};
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out;
+    position: relative; /* Allows us to absolute position the icon inside */
+    min-width: 10px; /* Ensures icon starts visible */
+  }
+
+  /* ICON STYLES */
+  .fsb-icon-wrapper {
+    position: absolute;
+    right: 0;          /* Anchors to the right tip of the fill bar */
+    top: 50%;          /* Centers vertically */
+    transform: translate(50%, -50%); /* Moves it to the exact center point */
+    
+    width: 30px;       /* Icon Container Size */
+    height: 30px;
+    background-color: {{ settings.icon_bg_color }};
+    border-radius: 50%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 2;
+  }
+
+  .fsb-icon-wrapper img {
+    width: 16px;       /* Image size inside the circle */
+    height: 16px;
+    object-fit: contain;
+    display: block;
+  }
+{% endstyle %}

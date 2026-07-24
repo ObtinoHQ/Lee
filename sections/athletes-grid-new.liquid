@@ -1,0 +1,374 @@
+{%- style -%}
+  /* --- SCOPED UNIQUE CLASSES (ath-grid-) --- */
+  
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    overflow: hidden;
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  .ath-grid-container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  /* Header & Toggle Controls */
+  .ath-grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding-bottom: 15px;
+  }
+
+  .ath-grid-title-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .ath-grid-title {
+    margin: 0;
+    font-family: 'Bebas Neue', sans-serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 1;
+    text-transform: uppercase;
+    color: #000;
+  }
+
+  .ath-grid-view-all {
+    font-family: 'Instrument Sans', sans-serif;
+    text-decoration: underline;
+    color: #000;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* Toggle Buttons (2 | 4) */
+  .ath-grid-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .ath-grid-control-label {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .ath-grid-btn {
+    background: transparent;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+  }
+
+  .ath-grid-btn:hover { border-color: #000; }
+  .ath-grid-btn.active {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+
+  /* GRID LAYOUT SYSTEM */
+  .ath-grid-layout {
+    display: grid;
+    gap: 24px;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* Desktop Modes */
+  .ath-grid-col-4 { grid-template-columns: repeat(4, 1fr); }
+  .ath-grid-col-2 { grid-template-columns: repeat(2, 1fr); }
+
+  /* Card Styling */
+  .ath-grid-card {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+  }
+
+  .ath-grid-image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: {{ section.settings.image_ratio | default: '125%' }}; 
+    overflow: hidden;
+    border-radius: 5px;
+    background: #f4f4f4;
+  }
+
+  .ath-grid-image-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .ath-grid-card:hover .ath-grid-image-wrapper img {
+    transform: scale(1.03);
+  }
+
+  .ath-grid-content {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    padding-top: 15px;
+  }
+
+  .ath-grid-name {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: #000000;
+    margin: 0 0 8px 0;
+  }
+
+  .ath-grid-bio-container {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #000000;
+  }
+  
+  .ath-grid-bio-text p { margin: 0; }
+  
+  .ath-grid-bio-text {
+    max-height: 4.5em; 
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+    position: relative;
+  }
+
+  .ath-grid-read-more-wrapper {
+    margin-top: 5px;
+  }
+
+  .ath-grid-read-more-trigger {
+    color: #000;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: 'Instrument Sans', sans-serif;
+  }
+  
+  .ath-grid-read-more-wrapper.hidden {
+    display: none;
+  }
+
+  /* Responsive Logic */
+  @media screen and (max-width: 990px) {
+    .ath-grid-container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+    /* Force 2 columns on tablet */
+    .ath-grid-layout.ath-grid-col-4 { grid-template-columns: repeat(2, 1fr); }
+    .ath-grid-controls { display: none; } /* Hide toggle on mobile/tablet */
+  }
+
+  @media screen and (max-width: 600px) {
+    /* 1 Column on mobile */
+    .ath-grid-layout.ath-grid-col-4,
+    .ath-grid-layout.ath-grid-col-2 { 
+      grid-template-columns: 1fr; 
+    }
+    .ath-grid-title { font-size: 32px; }
+    .ath-grid-header { flex-direction: column;  gap: 15px; }
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding">
+  <div class="ath-grid-container">
+    
+    <div class="ath-grid-header">
+      <div class="ath-grid-title-group">
+        <h2 class="ath-grid-title">{{ section.settings.heading }}</h2>
+      </div>
+
+      {% if section.blocks.size > 2 %}
+      <div class="ath-grid-controls">
+        <span class="ath-grid-control-label">View:</span>
+        <button class="ath-grid-btn" onclick="athToggle(2, '{{ section.id }}')" id="btn-2-{{ section.id }}">2</button>
+        <button class="ath-grid-btn active" onclick="athToggle(4, '{{ section.id }}')" id="btn-4-{{ section.id }}">4</button>
+      </div>
+      {% endif %}
+    </div>
+
+    <div id="grid-{{ section.id }}" class="ath-grid-layout ath-grid-col-4">
+      {% for block in section.blocks %}
+        <div class="ath-grid-card" {{ block.shopify_attributes }}>
+          
+          <div class="ath-grid-image-wrapper">
+            {% if block.settings.image != blank %}
+              <img 
+                src="{{ block.settings.image | image_url: width: 600 }}" 
+                alt="{{ block.settings.title }}" 
+                loading="lazy"
+                width="600"
+                height="750"
+              >
+            {% else %}
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {% endif %}
+          </div>
+
+           {%- if block.settings.show_content -%}
+            <div class="ath-grid-content">
+              <h3 class="ath-grid-name">{{ block.settings.title }}</h3>
+              
+              <div class="ath-grid-bio-container">
+                <div class="ath-grid-bio-text">
+                  {{ block.settings.description }}
+                </div>
+                <div class="ath-grid-read-more-wrapper">
+                  <button type="button" class="ath-grid-read-more-trigger">Read More</button>
+                </div>
+              </div>
+            </div>
+          {%- endif -%}
+
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // 1. Grid Toggle Logic
+  function athToggle(cols, id) {
+    var grid = document.getElementById('grid-' + id);
+    var btn2 = document.getElementById('btn-2-' + id);
+    var btn4 = document.getElementById('btn-4-' + id);
+
+    if(cols === 2){
+      grid.classList.remove('ath-grid-col-4');
+      grid.classList.add('ath-grid-col-2');
+      btn2.classList.add('active');
+      btn4.classList.remove('active');
+    } else {
+      grid.classList.remove('ath-grid-col-2');
+      grid.classList.add('ath-grid-col-4');
+      btn4.classList.add('active');
+      btn2.classList.remove('active');
+    }
+  }
+
+  // 2. Read More / Read Less Logic (Scoped to this new section)
+  document.addEventListener('DOMContentLoaded', function () {
+    // Select only buttons inside this specific grid section
+    const readButtons = document.querySelectorAll('#grid-{{ section.id }} .ath-grid-read-more-trigger');
+
+    readButtons.forEach(btn => {
+      const container = btn.closest('.ath-grid-bio-container');
+      const textElement = container.querySelector('.ath-grid-bio-text');
+      
+      // Hide button if text is short
+      if (textElement.scrollHeight <= textElement.clientHeight + 5) {
+        btn.closest('.ath-grid-read-more-wrapper').classList.add('hidden');
+      }
+
+      btn.addEventListener('click', function() {
+        const isExpanded = textElement.classList.contains('expanded');
+        
+        if (isExpanded) {
+          // Collapse
+          textElement.style.maxHeight = textElement.scrollHeight + 'px';
+          void textElement.offsetWidth; // Force Reflow
+          textElement.style.maxHeight = null;
+          textElement.classList.remove('expanded');
+          this.textContent = 'Read More';
+        } else {
+          // Expand
+          textElement.classList.add('expanded');
+          textElement.style.maxHeight = textElement.scrollHeight + 'px';
+          this.textContent = 'Read Less';
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Athletes Grid Full",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "OUR ATHLETES"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Image Ratio",
+      "default": "125%",
+      "options": [
+        { "value": "150%", "label": "Portrait (2:3)" },
+        { "value": "125%", "label": "Portrait (4:5)" },
+        { "value": "100%", "label": "Square (1:1)" },
+        { "value": "75%", "label": "Landscape (4:3)" }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0, "max": 100, "step": 4, "unit": "px",
+      "label": "Padding Top", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0, "max": 100, "step": 4, "unit": "px",
+      "label": "Padding Bottom", "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "athlete",
+      "name": "Athlete",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "checkbox", "id": "show_content", "label": "Show Content", "default": true },
+        { "type": "text", "id": "title", "label": "Name", "default": "ATHLETE NAME" },
+        { "type": "richtext", "id": "description", "label": "Description", "default": "<p>Bio text here.</p>" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Athletes Grid Full",
+      "blocks": [
+        { "type": "athlete" }, { "type": "athlete" }, { "type": "athlete" }, { "type": "athlete" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,182 @@
+<style>
+  .splid_productGallery_img{width: 100% !important;height:100%;position: relative;}
+  .splid_productGallery_img img{width: 100%;height: 100%;object-fit: cover;display: flex;}
+  .splid_productGallery_img video{width: 100%;height: 100%;object-fit: cover;display: flex;}
+  .desktop_productGallery{display:flex;}
+      .mobile_productGallery{display:none;}
+      .mobile_productGallery_thumb{width: 100%;height: auto;margin-top: 5px; display: flex;}
+      .splid_productThumb_img img{width: 100%;height: 100%;object-fit: cover;display: flex;}
+      .splid_productThumb_img{border:1px solid transparent !important;border-radius:5px;overflow: auto;}
+      .splid_productThumb_img.is-active{border: 1px solid rgba(0,0,0,0.5) !important;}
+      .WI_zoomProductImage{width: 100%;height: 100%;position: fixed;top: 0;left: 0;z-index: 1000;display: none;overflow: auto;}
+      .WI_zoomProductImageimg{width: 100%;height:100%;object-fit: contain;position: relative;}
+      .zoomCls{position: absolute;left: 0;top: 0;width: 100%;height: auto;padding: 20px;display: flex;justify-content: flex-end;}
+      .zoomCls p{margin: 0;display: flex;justify-content: flex-end;align-items: center;font-weight: 600;text-transform: uppercase;font-size: 14px;cursor: pointer;}
+      .WI_zoomimgCon{width: 100%;height: 100%;position: relative;overflow: auto;}
+      .zoomClsP{font-size: 14px;font-weight: 600;margin: 0;display: flex;justify-content: flex-end;align-items: center;color: #000;font-family: var(--big-font);}
+      .mobProduct_prev_arrow{width:32px;height: 32px;}
+      .mobProduct_next_arrow{width:32px;height: 32px;}
+      .mobProduct_prev_arrow svg{transform: rotateX(180deg);transform-origin: center;}
+      .mobosplideimg{visibility: hidden;opacity: 0;transition: 0.5s ease-out;}
+      .imgload{visibility: visible;opacity: 1;}
+      .splid_productThumb_video{position:relative;}
+      .splid_productThumb_video svg{position: absolute;width: 30px;height: 30px;opacity:0.6;}
+      .WI_main_product_main .splide__arrow{z-index:2;}
+      ul.splide__list {
+      padding: 0 !important;
+      padding-left: 0 !important;
+      padding-inline-start: 0 !important;
+      margin: 0 !important;
+      list-style: none !important;
+      display: flex !important;
+      gap: 0 !important;
+      align-items: start !important;
+      justify-content: flex-start !important;
+  }
+  @media screen and (max-width: 769px) {
+      .desktop_productGallery{display: none;}
+      .mobile_productGallery{display: flex;}
+      .splid_productGallery_img{width: 100% !important;height: 100%;z-index: 1;}
+      .splid_productGallery_img svg{z-index: 0;}
+      .mobile_productGallery_thumb{display: flex;}
+      .WI_zoomProductImageimg{width: 800px;height:1000px;}
+  }
+</style>
+<section class="splide desktop_productGallery" id="desktop_productGallery">
+    <div class="splide__arrows">
+      <button class="splide__arrow splide__arrow--prev deskProduct_prev_arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M25 15L5 15M5 15L12.5 7.5M5 15L12.5 22.5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="splide__arrow splide__arrow--next deskProduct_next_arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" fill="none"><path d="M0.750002 8.25L20.75 8.25M20.75 8.25L13.25 15.75M20.75 8.25L13.25 0.75" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  <div class="splide__track">
+
+    <ul class="splide__list" id="WI_desktopProductSlidUl">
+      {%- for product_image in product.media -%}
+        {%- if product_image.media_type == 'image' -%}
+          <li class="splide__slide splid_productGallery_img">
+            <a
+              href="{{ product_image | image_url: width: 2000 }}"
+              data-fancybox="desktop-gallery"
+              data-caption="{{ product.title | escape }}"
+              class="productimgforcursor"
+            >
+              {{ product_image | image_url: width: 1000 | image_tag: loading: 'eager' }}
+            </a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+<section class="splide mobile_productGallery" id="mobile_productGallery">
+    <div class="splide__arrows">
+      <button class="splide__arrow splide__arrow--prev mobProduct_prev_arrow">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M25 15L5 15M5 15L12.5 7.5M5 15L12.5 22.5" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="splide__arrow splide__arrow--next mobProduct_next_arrow">
+         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="17" viewBox="0 0 22 17" fill="none"><path d="M0.750002 8.25L20.75 8.25M20.75 8.25L13.25 15.75M20.75 8.25L13.25 0.75" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  <div class="splide__track">
+    <ul class="splide__list" id="WI_mobileProductSlidUl">
+      {%- for product_image in product.media -%}
+        {%- if product_image.media_type == 'image' -%}
+          <li class="splide__slide splid_productGallery_img">
+            <a
+              href="{{ product_image | image_url: width: 2000 }}"
+              data-fancybox="mobile-gallery"
+              data-caption="{{ product.title | escape }}"
+            >
+              {{ product_image | image_url: width: 1000 | image_tag: loading: 'eager' }}
+            </a>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+<section id="thumbnail-carousel" class="splide mobile_productGallery_thumb">
+  <div class="splide__track">
+    <ul class="splide__list">
+      {%- for product_image in product.media -%}
+        {%- if product_image.media_type == 'image' -%}
+          <li class="splide__slide splid_productThumb_img">
+            {{ product_image | image_url: width: 280 | image_tag: loading: 'eager' }}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      // 1. Initialize Splide Sliders
+      var productDesktopGallery = new Splide('#desktop_productGallery', {
+          perPage: 1,
+          type: "loop",
+          arrows: true,
+          rewindSpeed: 1000,
+          pagination: true,
+          perMove: 1,
+      });
+
+      var productMobileGallery = new Splide('#mobile_productGallery', {
+          perPage: 1,
+          type: "loop",
+          arrows: true,
+          rewindSpeed: 1000,
+          pagination: true,
+          perMove: 1,
+      });
+
+      var productThumbnails = new Splide('#thumbnail-carousel', {
+          fixedWidth: 133,
+          fixedHeight:133,
+          perPage: 4.8,
+          arrows: false,
+          pagination: false,
+          gap: 5,
+          padding: { left: "0px" },
+          perMove: 1,
+          isNavigation: true,
+      });
+
+      // Sync thumbnails
+      productDesktopGallery.sync(productThumbnails);
+      productMobileGallery.sync(productThumbnails);
+      
+      productDesktopGallery.mount();
+      productMobileGallery.mount();
+      productThumbnails.mount();
+
+      // 2. Initialize Fancybox
+      // We define the options once based on screen size
+      const isMobile = window.innerWidth <= 768;
+      
+      const fancyboxOptions = {
+        Thumbs: !isMobile,
+        Image: {
+          zoom: !isMobile,
+        },
+        Toolbar: {
+          display: isMobile ? [] : ['zoom', 'slideshow', 'fullscreen', 'close'],
+        },
+        Buttons: isMobile ? [] : ['prev', 'next', 'close'],
+        Nav: {
+          arrows: !isMobile,
+        },
+        // Prevents loop clones from confusing Fancybox
+        Hash: false, 
+      };
+
+      // Bind to BOTH galleries separately using the unique names we added
+      // This ensures Desktop clicks only show desktop images in the popup
+      Fancybox.bind('[data-fancybox="desktop-gallery"]', fancyboxOptions);
+      Fancybox.bind('[data-fancybox="mobile-gallery"]', fancyboxOptions);
+  });
+</script>

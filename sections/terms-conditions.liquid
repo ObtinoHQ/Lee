@@ -1,0 +1,246 @@
+
+
+{% style %}
+
+
+  .terms-section-wrapper {
+    background-color: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
+    padding: 60px 20px;
+    font-family: 'Instrument Sans', sans-serif;
+    overflow: hidden;
+  }
+
+  .terms-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* --- Typography --- */
+  .terms-main-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    line-height: 1;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+    color: {{ section.settings.heading_color }};
+  }
+
+  .terms-section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+    color: {{ section.settings.heading_color }};
+  }
+
+  /* Body Text Styles as requested */
+  .terms-text p, 
+  .terms-text li,
+  .terms-intro p {
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 500; /* Medium */
+    font-size: 16px;
+    line-height: 1.4; /* Adjusted from 100% to 1.4 for readability, as 100% crashes multiline text */
+    letter-spacing: 0;
+    margin-bottom: 20px;
+    color: {{ section.settings.text_color }};
+  }
+
+  .terms-text ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .terms-text li {
+    margin-bottom: 5px;
+  }
+
+  /* --- Divider Style --- */
+  .terms-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 40px 0;
+    opacity: 0.6;
+  }
+  .terms-divider span {
+    height: 1px;
+    background-color: {{ section.settings.text_color }};
+    flex: 1;
+  }
+  .terms-divider i {
+    width: 8px;
+    height: 8px;
+    border: 1px solid {{ section.settings.text_color }};
+    transform: rotate(45deg); /* Diamond shape */
+    margin: 0 15px;
+    display: block;
+  }
+
+{% endstyle %}
+
+<div class="terms-section-wrapper">
+  <div class="terms-container">
+    
+    {%- if section.settings.main_heading != blank -%}
+      <h1 class="terms-main-title">{{ section.settings.main_heading }}</h1>
+    {%- endif -%}
+
+    {% comment %} --- Render Blocks --- {% endcomment %}
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        
+        {%- when 'intro_text' -%}
+          <div class="terms-intro" {{ block.shopify_attributes }}>
+            {{ block.settings.text }}
+          </div>
+
+        {%- when 'divider' -%}
+          <div class="terms-divider" aria-hidden="true" {{ block.shopify_attributes }}>
+            <span></span><i></i><span></span>
+          </div>
+
+        {%- when 'content_section' -%}
+          <section class="terms-section" {{ block.shopify_attributes }}>
+            {%- if block.settings.heading != blank -%}
+              <h2 class="terms-section-title">{{ block.settings.heading }}</h2>
+            {%- endif -%}
+            <div class="terms-text">
+              {{ block.settings.content }}
+            </div>
+          </section>
+
+      {%- endcase -%}
+    {%- endfor -%}
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Terms & Conditions",
+  "settings": [
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Page Heading",
+      "default": "TERMS & CONDITIONS"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#121212"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "intro_text",
+      "name": "Intro Text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Welcome to LUXIAOJUN EUROPE.</p>"
+        }
+      ]
+    },
+    {
+      "type": "content_section",
+      "name": "Section",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Section Heading",
+          "default": "SECTION 1 – ONLINE STORE TERMS"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content"
+        }
+      ]
+    },
+    {
+      "type": "divider",
+      "name": "Divider Separator"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Terms & Conditions Page",
+      "blocks": [
+        {
+          "type": "intro_text",
+          "settings": {
+            "text": "<p>Welcome to LUXIAOJUN EUROPE.</p><p>Throughout this website, the terms “we”, “us”, and “our” refer to LUXIAOJUN EUROPE.</p><p>By accessing our website and/or purchasing from us, you agree to be bound by these Terms and Conditions (“Terms of Service”, “Terms”), including additional terms and policies referenced herein or available by hyperlink.</p><p>Please read these Terms carefully before using our website. If you do not agree with them, you may not access or use any part of our services.</p><p>Our store is hosted on WooCommerce Inc., providing the online e-commerce platform that enables us to sell products and services to you.</p>"
+          }
+        },
+        { "type": "divider" },
+        {
+          "type": "content_section",
+          "settings": {
+            "heading": "SECTION 1 – ONLINE STORE TERMS",
+            "content": "<p>By agreeing to these Terms, you confirm that you are at least the age of majority in your country or have given consent for any of your minor dependents to use this site.</p><p>You may not use our products for any unlawful or unauthorized purposes, nor violate any laws in your jurisdiction (including copyright laws).</p><p>You must not transmit any worms, viruses, or any code of a destructive nature. A breach of any Terms will result in immediate termination of your services.</p>"
+          }
+        },
+        { "type": "divider" },
+        {
+          "type": "content_section",
+          "settings": {
+            "heading": "SECTION 2 – GENERAL CONDITIONS",
+            "content": "<p>We reserve the right to refuse service to anyone, at any time, for any reason.</p><p>You understand that your content (excluding credit card information) may be transferred unencrypted across networks. Credit card information is always encrypted during transfer.</p><p>You agree not to reproduce, duplicate, copy, sell, resell, or exploit any portion of the Service without written permission from us.</p>"
+          }
+        },
+        { "type": "divider" },
+        {
+          "type": "content_section",
+          "settings": {
+            "heading": "SECTION 3 – ACCURACY, COMPLETENESS AND TIMELINESS OF INFORMATION",
+            "content": "<p>We are not responsible if information on this site is inaccurate, incomplete, or outdated. The material on this site is for general information only and should not be used as the sole basis for decision-making.</p><p>We may modify the contents of this site at any time without obligation to update any information.</p>"
+          }
+        },
+        { "type": "divider" },
+        {
+          "type": "content_section",
+          "settings": {
+            "heading": "SECTION 12 – PROHIBITED USES",
+            "content": "<p>We reserve the right to terminate your access for violations of these restrictions:</p><ul><li>Any unlawful purpose</li><li>Violating laws or regulations</li><li>Infringing intellectual property rights</li><li>Harassment, discrimination, or abuse</li><li>Submitting false information</li><li>Uploading malicious code</li><li>Collecting others’ personal information</li><li>Spamming or phishing</li><li>Any immoral or obscene purpose</li></ul>"
+          }
+        },
+        { "type": "divider" },
+        {
+          "type": "content_section",
+          "settings": {
+            "heading": "SECTION 20 – CONTACT INFORMATION",
+            "content": "<p>Questions about the Terms of Service can be sent to:</p><p><strong>Email:</strong> contact@luxiaojun.eu<br><strong>Phone:</strong> +31 6 17 06 05 74</p><p><strong>Company Details:</strong><br>LUXIAOJUN EUROPE<br>Email: mail@luxiaojun.eu<br>KvK: 90793544<br>VAT: NL004841650B48</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

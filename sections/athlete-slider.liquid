@@ -1,0 +1,398 @@
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    overflow: hidden;
+    background-color: {{ section.settings.bg_color }};
+  }
+
+  .athlete-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  .athlete-title-group {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .athlete-title {
+    margin: 0;
+    font-family: Bebas Neue, sans-serif;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 60px;
+    text-transform: uppercase;
+    color: #000;
+  }
+
+  .athlete-nav-group {
+    display: flex;
+    gap: 15px;
+  }
+
+  .athlete-nav-btn {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
+    color: #000;
+  }
+  .athlete-nav-btn.swiper-button-disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .athlete-nav-btn svg {
+    width: 100%;
+    height: 100%;
+    stroke-width: 2px;
+  }
+
+  .athlete-card {
+    display: flex;
+    flex-direction: column;
+    height: auto; /* Allow height to grow */
+  }
+.athlete-image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: {{ section.settings.image_ratio | default: '125%' }}; 
+    overflow: hidden;
+    border-radius: 5px;
+  }
+
+  .athlete-image-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .athlete-card:hover .athlete-image-wrapper img {
+    transform: scale(1.03);
+  }
+
+  .athlete-content {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .athlete-name {
+font-family: Instrument Sans;
+font-weight: 600;
+font-style: SemiBold;
+font-size: 16px;
+leading-trim: CAP_HEIGHT;
+line-height: 100%;
+letter-spacing: 0%;
+    color: #000000;
+  }
+
+  .athlete-bio-container {
+  font-family: Instrument Sans;
+font-weight: 400;
+font-style: Regular;
+font-size: 16px;
+leading-trim: CAP_HEIGHT;
+line-height: 140%;
+letter-spacing: 0%;
+    color: #000000;
+  }
+.athlete-bio-text p{
+    margin: 0;
+}
+  .athlete-bio-text {
+    max-height: 4.5em; 
+    overflow: hidden;
+    transition: max-height 0.4s ease-out; /* Smooth CSS transition */
+    position: relative;
+    /* Removed line-clamp to allow proper max-height animation */
+  }
+
+  .read-more-wrapper {
+    margin-top: 5px;
+  }
+
+  .read-more-trigger {
+    color: #000;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  
+  .read-more-wrapper.hidden {
+    display: none;
+  }
+
+  @media screen and (max-width: 800px) {
+    .athlete-title {
+      font-size: 32px;
+    }
+    .athlete-header {
+    flex-direction: row;
+    align-items: center;
+    margin: 0px;
+}
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding">
+  <div class="athlete-container container-x">
+    
+    <div class="athlete-header">
+      <div class="athlete-title-group">
+        <h2 class="athlete-title">{{ section.settings.heading }}</h2>
+        {% if section.settings.link_text != blank %}
+          <a href="{{ section.settings.link_url }}" class="view-all">{{ section.settings.link_text }}</a>
+        {% endif %}
+      </div>
+
+      <div class="athlete-nav-group">
+        <div class="athlete-nav-btn athlete-prev-{{ section.id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M20 12L4 12M4 12L10 6M4 12L10 18" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="athlete-nav-btn athlete-next-{{ section.id }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M4 12L20 12M20 12L14 18M20 12L14 6" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="swiper athlete-swiper-{{ section.id }}">
+      <div class="swiper-wrapper">
+        {% for block in section.blocks %}
+          <div class="swiper-slide athlete-card" {{ block.shopify_attributes }}>
+            
+            <div class="athlete-image-wrapper">
+              {% if block.settings.image != blank %}
+                <img 
+                  src="{{ block.settings.image | image_url: width: 600 }}" 
+                  alt="{{ block.settings.title }}" 
+                  loading="lazy"
+                  width="600"
+                  height="750"
+                >
+              {% else %}
+                {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+              {% endif %}
+            </div>
+
+           {%- if block.settings.show_content -%}
+              <div class="athlete-content">
+                <h3 class="athlete-name">{{ block.settings.title }}</h3>
+                
+                <div class="athlete-bio-container">
+                  <div class="athlete-bio-text">
+                    {{ block.settings.description }}
+                  </div>
+                  <div class="read-more-wrapper">
+                    <button type="button" class="read-more-trigger">Read More</button>
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const swiper = new Swiper('.athlete-swiper-{{ section.id }}', {
+      slidesPerView: 1.4,
+      spaceBetween: 10,
+      loop: false,
+      navigation: {
+        nextEl: '.athlete-next-{{ section.id }}',
+        prevEl: '.athlete-prev-{{ section.id }}',
+      },
+      breakpoints: {
+        640: { slidesPerView: 2.2, spaceBetween: 20 },
+        990: { slidesPerView: 3.2, spaceBetween: 20 },
+        1200: { slidesPerView: 4, spaceBetween: 20 },
+      }
+    });
+
+    // 2. Read More / Read Less Logic
+    const readMoreButtons = document.querySelectorAll('.athlete-swiper-{{ section.id }} .read-more-trigger');
+
+    readMoreButtons.forEach(btn => {
+      // Logic to hide button if text is short
+      const container = btn.closest('.athlete-bio-container');
+      const textElement = container.querySelector('.athlete-bio-text');
+      
+      // If content is smaller than collapsed height (approx 4.5em ~ 60-70px), hide button
+      if (textElement.scrollHeight <= textElement.clientHeight + 5) {
+        btn.closest('.read-more-wrapper').classList.add('hidden');
+      }
+
+      // Logic for Click
+      btn.addEventListener('click', function() {
+        const isExpanded = textElement.classList.contains('expanded');
+        
+        if (isExpanded) {
+          // COLLAPSE
+          // Set to current height explicitly first for transition to work
+          textElement.style.maxHeight = textElement.scrollHeight + 'px';
+          
+          // Force reflow
+          void textElement.offsetWidth; 
+
+          // Remove inline max-height to fall back to CSS default (4.5em)
+          textElement.style.maxHeight = null;
+          textElement.classList.remove('expanded');
+          this.textContent = 'Read More';
+        } else {
+          // EXPAND
+          textElement.classList.add('expanded');
+          // Set max-height to the exact scrollHeight of the content
+          textElement.style.maxHeight = textElement.scrollHeight + 'px';
+          this.textContent = 'Read Less';
+        }
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Athletes Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "OUR ATHLETES"
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link Text",
+      "default": "View All"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+  "type": "select",
+  "id": "image_ratio",
+  "label": "Image Ratio",
+  "default": "125%",
+  "options": [
+    {
+      "value": "150%",
+      "label": "Portrait (2:3)"
+    },
+    {
+      "value": "125%",
+      "label": "Portrait (4:5)"
+    },
+    {
+      "value": "100%",
+      "label": "Square (1:1)"
+    },
+    {
+      "value": "75%",
+      "label": "Landscape (4:3)"
+    },
+    {
+      "value": "56.25%",
+      "label": "Landscape (16:9)"
+    }
+  ]
+},
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "athlete",
+      "name": "Athlete",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "checkbox",
+          "id": "show_content",
+          "label": "Show Content",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "default": "FRAER"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Fraer is an elite CrossFit athlete from Germany, competing at the highest level of the sport. Her training regimen is grueling and disciplined. This extra text is here to demonstrate the read more functionality working correctly.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Athletes Slider",
+      "blocks": [
+        {"type": "athlete"},
+        {"type": "athlete"},
+        {"type": "athlete"},
+        {"type": "athlete"}
+      ]
+    }
+  ]
+}
+{% endschema %}

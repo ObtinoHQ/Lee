@@ -1,0 +1,380 @@
+
+
+{% style %}
+
+  .ws-section {
+    padding: 60px 20px;
+    background-color: #ffffff;
+    font-family: 'Instrument Sans', sans-serif;
+    color: #333;
+  }
+
+  .ws-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 80px;
+  }
+
+  .ws-form-col {
+    flex: 1;
+    min-width: 350px;
+  }
+
+  .ws-field-group {
+    margin-bottom: 25px;
+  }
+
+  .ws-label {
+    display: block;
+    font-size: 14px;
+    color: #000; /* Light gray label color */
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+
+  .ws-input, 
+  .ws-select, 
+  .ws-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e1e1e1;
+    border-radius: 0; /* Square edges */
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    color: #000;
+    background-color: #fff;
+    box-sizing: border-box;
+    appearance: none; /* Removes default browser styling */
+  }
+
+  /* Custom Arrow for Select Boxes */
+  .ws-select-wrapper {
+    position: relative;
+  }
+  .ws-select-wrapper::after {
+    content: "↓";
+    font-size: 12px;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #999;
+  }
+
+  .ws-textarea {
+    min-height: 200px;
+    resize: vertical;
+  }
+
+  .ws-submit {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 15px 40px;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 10px;
+  }
+
+  .ws-submit:hover {
+    background-color: #333;
+  }
+
+  /* --- Right Column: Table --- */
+  .ws-table-col {
+    flex: 0 0 450px; /* Fixed width for table column */
+    padding-top: 25px; /* Align with form inputs */
+  }
+
+  .ws-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    color: #000;
+  }
+
+  .ws-table th {
+    text-align: left;
+    font-weight: 500;
+    color: #000;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    text-transform: uppercase;
+    font-size: 13px;
+  }
+
+  .ws-table th:last-child {
+    text-align: right;
+  }
+
+  .ws-table td {
+    padding: 20px 0;
+    border-bottom: 1px solid #f5f5f5;
+    line-height: 1.4;
+  }
+
+  .ws-table td:last-child {
+    text-align: right;
+    font-weight: 500;
+    padding-left: 20px;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 900px) {
+    .ws-container {
+      flex-direction: column;
+      gap: 40px;
+    }
+    .ws-table-col {
+      flex: 1;
+      width: 100%;
+    }
+  }
+{% endstyle %}
+
+<div class="ws-section">
+  <div class="ws-container">
+    
+    <div class="ws-form-col">
+      {% form 'contact' %}
+        
+        {% if form.posted_successfully? %}
+          <p style="color: green; margin-bottom: 20px;">Thank you! Your inquiry has been sent.</p>
+        {% endif %}
+        {{ form.errors | default_errors }}
+
+        <div class="ws-field-group">
+          <label class="ws-label">Your email</label>
+          <input type="email" name="contact[email]" class="ws-input" placeholder="example@mail.com" required>
+        </div>
+
+        <div class="ws-field-group">
+          <label class="ws-label">Select Product</label>
+          <div class="ws-select-wrapper">
+            <select name="contact[product]" class="ws-select">
+              <option value="" disabled selected>Select a product...</option>
+              <option value="LUXIAOJUN Knee Sleeves 7mm (Panda)">LUXIAOJUN Knee Sleeves 7mm (Panda)</option>
+              <option value="LUXIAOJUN X-Load Cross Training Shoes (Panda)">LUXIAOJUN X-Load Cross Training Shoes (Panda)</option>
+              <option value="LUXIAOJUN X-Load Cross Training Shoes (Orange)">LUXIAOJUN X-Load Cross Training Shoes (Orange)</option>
+              <option value="LUXIAOJUN X-Load Cross Training Shoes (Green)">LUXIAOJUN X-Load Cross Training Shoes (Green)</option>
+              <option value="LUXIAOJUN AT100-03 Adjustable Weight Bench">LUXIAOJUN AT100-03 Adjustable Weight Bench</option>
+              <option value="LUXIAOJUN AT300 Weightlifting Belt">LUXIAOJUN AT300 Weightlifting Belt</option>
+              <option value="Mini-barbell Keychain">Mini-barbell Keychain</option>
+              <option value="LUXIAOJUN Barefoot Pro Training Shoes (White)">LUXIAOJUN Barefoot Pro Training Shoes (White)</option>
+              <option value="LUXIAOJUN Barefoot Pro Training Shoes (Black)">LUXIAOJUN Barefoot Pro Training Shoes (Black)</option>
+              <option value="Gift Card - Luxiaojun Eu Shop">Gift Card - Luxiaojun Eu Shop</option>
+              <option value="LUXIAOJUN XT-Motion Cross Training Shoes (Porcelain Flow)">LUXIAOJUN XT-Motion Cross Training Shoes (Porcelain Flow)</option>
+              <option value="LUXIAOJUN XT-Motion Cross Training Shoes (White)">LUXIAOJUN XT-Motion Cross Training Shoes (White)</option>
+              <option value="LUXIAOJUN XT-Motion Cross Training Shoes (Black)">LUXIAOJUN XT-Motion Cross Training Shoes (Black)</option>
+              <option value="LUXIAOJUN XT-Motion Cross Training Shoes (Golden)">LUXIAOJUN XT-Motion Cross Training Shoes (Golden)</option>
+              <option value="LUXIAOJUN BarePower 2.0 Training Shoes (Cement Gray)">LUXIAOJUN BarePower 2.0 Training Shoes (Cement Gray)</option>
+              <option value="LUXIAOJUN X Onyx Speical Edition HIGH-TOP Wrist Wraps">LUXIAOJUN X Onyx Speical Edition HIGH-TOP Wrist Wraps</option>
+              <option value="LUXIAOJUN Barefoot Pro Training Shoes (Golden)">LUXIAOJUN Barefoot Pro Training Shoes (Golden)</option>
+              <option value="LUXIAOJUN Pro Sportswear Women's Fitness Training Tight Shorts">LUXIAOJUN Pro Sportswear Women's Fitness Training Tight Shorts</option>
+              <option value="LUXIAOJUN Pro Sportswear Women's Fitness Tights">LUXIAOJUN Pro Sportswear Women's Fitness Tights</option>
+              <option value="LUXIAOJUN X-Load Cross Training Shoes (Black)">LUXIAOJUN X-Load Cross Training Shoes (Black)</option>
+              <option value="LUXIAOJUN X-Load Cross Training Shoes (White)">LUXIAOJUN X-Load Cross Training Shoes (White)</option>
+              <option value="LUXIAOJUN Weightlifting Shoes - Lavande Elite Edition">LUXIAOJUN Weightlifting Shoes - Lavande Elite Edition</option>
+              <option value="LUXIAOJUN Kids Weightlifting Shoes - Magic Comet Edition">LUXIAOJUN Kids Weightlifting Shoes - Magic Comet Edition</option>
+              <option value="LUXIAOJUN Weightlifting Shoes LUXIAOJUN x CrossFit Edition -Pulse Lime">LUXIAOJUN Weightlifting Shoes LUXIAOJUN x CrossFit Edition -Pulse Lime</option>
+              <option value="LUXIAOJUN Weightlifting Shoes LUXIAOJUN x CrossFit Edition - Combat Green">LUXIAOJUN Weightlifting Shoes LUXIAOJUN x CrossFit Edition - Combat Green</option>
+              <option value="LUXIAOJUN Technique Training Bar -5KG">LUXIAOJUN Technique Training Bar -5KG</option>
+              <option value="LUXIAOJUN Unisex Oversize Dragon Power Tee">LUXIAOJUN Unisex Oversize Dragon Power Tee</option>
+              <option value="LUXIAOJUN Weightlifting Shoes Karlos Nasar x Luxiaojun 'I Win You Lose' Edition">LUXIAOJUN Weightlifting Shoes Karlos Nasar x Luxiaojun "I Win You Lose" Edition</option>
+              <option value="LUXIAOJUN BarePower 1.0 Training Shoes 1.0 (Berry)">LUXIAOJUN BarePower 1.0 Training Shoes 1.0 (Berry)</option>
+              <option value="LUXIAOJUN Competition Barbell Collar">LUXIAOJUN Competition Barbell Collar</option>
+              <option value="LUXIAOJUN Technique Training Bar -10KG">LUXIAOJUN Technique Training Bar -10KG</option>
+              <option value="LUXIAOJUN Men's Olympic Weightlifting Competition Bar">LUXIAOJUN Men's Olympic Weightlifting Competition Bar</option>
+              <option value="LUXIAOJUN Weightlifting Shoes White Heat Edition">LUXIAOJUN Weightlifting Shoes White Heat Edition</option>
+              <option value="LUXIAOJUN Resistance Band">LUXIAOJUN Resistance Band</option>
+              <option value="LUXIAOJUN Logo Red Round Pinback Button">LUXIAOJUN Logo Red Round Pinback Button</option>
+              <option value="LUXIAOJUN Mesh Drawstring Backpack Training Gymsack">LUXIAOJUN Mesh Drawstring Backpack Training Gymsack</option>
+              <option value="LUXIAOJUN Cushion Crew Socks">LUXIAOJUN Cushion Crew Socks</option>
+              <option value="LUXIAOJUN Wool Ribbed Beanie - Unisex Winter Knit Hat">LUXIAOJUN Wool Ribbed Beanie - Unisex Winter Knit Hat</option>
+              <option value="LUXIAOJUN Figure 8 Weightlifting Strap">LUXIAOJUN Figure 8 Weightlifting Strap</option>
+              <option value="LUXIAOJUN Weightlifting Shoes 'Pinky Berry Boost' Edition">LUXIAOJUN Weightlifting Shoes 'Pinky Berry Boost' Edition</option>
+              <option value="LUXIAOJUN Women's Quick-Dry Lightweight Sports Shorts 9&quot;">LUXIAOJUN Women's Quick-Dry Lightweight Sports Shorts 9"</option>
+              <option value="LUXIAOJUN Men's Quick-Dry Lightweight Sports Shorts 9&quot;">LUXIAOJUN Men's Quick-Dry Lightweight Sports Shorts 9"</option>
+              <option value="LUXIAOJUN Sportswear Men's T-shirt Snake Year Limited Edition">LUXIAOJUN Sportswear Men's T-shirt Snake Year Limited Edition</option>
+              <option value="LUXIAOJUN Basic Sportswear Essential Classic Men's T-shirt">LUXIAOJUN Basic Sportswear Essential Classic Men's T-shirt</option>
+              <option value="LUXIAOJUN Basic Sportswear Essential Classic Women's T-shirt">LUXIAOJUN Basic Sportswear Essential Classic Women's T-shirt</option>
+              <option value="LUXIAOJUN Men's Olympic Weightlifting Training Bar">LUXIAOJUN Men's Olympic Weightlifting Training Bar</option>
+              <option value="LUXIAOJUN Women's Olympic Weightlifting Training Bar">LUXIAOJUN Women's Olympic Weightlifting Training Bar</option>
+              <option value="LUXIAOJUN Daily Essentials Crew Socks">LUXIAOJUN Daily Essentials Crew Socks</option>
+              <option value="LUXIAOJUN Pro Sportswear Men's Fitness Tights">LUXIAOJUN Pro Sportswear Men's Fitness Tights</option>
+              <option value="LUXIAOJUN Pro Sportswear Men's Fitness Training Tight Shorts">LUXIAOJUN Pro Sportswear Men's Fitness Training Tight Shorts</option>
+              <option value="LUXIAOJUN Daily Essentials Unisex Long Sleeves T-shirt">LUXIAOJUN Daily Essentials Unisex Long Sleeves T-shirt</option>
+              <option value="LUXIAOJUN Sportswear Essentials Unisex Oversized Pullover Hoodie">LUXIAOJUN Sportswear Essentials Unisex Oversized Pullover Hoodie</option>
+              <option value="LUXIAOJUN Weightlifting Shoes - Snake Year Limited Edition (Venom Pink)">LUXIAOJUN Weightlifting Shoes - Snake Year Limited Edition (Venom Pink)</option>
+              <option value="LUXIAOJUN Weightlifting Shoes - Snake Year Limited Edition ( Golden Python )">LUXIAOJUN Weightlifting Shoes - Snake Year Limited Edition ( Golden Python )</option>
+              <option value="LUXIAOJUN Plates Patch">LUXIAOJUN Plates Patch</option>
+              <option value="LUXIAOJUN Daily Essentials Men's Performance Tank">LUXIAOJUN Daily Essentials Men's Performance Tank</option>
+              <option value="LUXIAOJUN Daily Essentials Men's Performance Tee">LUXIAOJUN Daily Essentials Men's Performance Tee</option>
+              <option value="LUXIAOJUN Daily Essentials Women's Performance Tee">LUXIAOJUN Daily Essentials Women's Performance Tee</option>
+              <option value="LUXIAOJUN Daily Essentials Women's Performance Crop">LUXIAOJUN Daily Essentials Women's Performance Crop</option>
+              <option value="LUXIAOJUN Weightlifting Shoes - Shanghai Edition">LUXIAOJUN Weightlifting Shoes - Shanghai Edition</option>
+              <option value="LUXIAOJUN Weightlifting Shoes - Keydo">LUXIAOJUN Weightlifting Shoes - Keydo</option>
+              <option value="LUXIAOJUN Bumper Plates (MACARON)">LUXIAOJUN Bumper Plates (MACARON)</option>
+              <option value="LUXIAOJUN Key Chain (Golden Shoes)">LUXIAOJUN Key Chain (Golden Shoes)</option>
+              <option value="LUXIAOJUN PLATES Keychain">LUXIAOJUN PLATES Keychain</option>
+              <option value="LUXIAOJUN LOGO Patch">LUXIAOJUN LOGO Patch</option>
+              <option value="LIU HUANHUA PARIS LIMITED VERSION T-Shirt">LIU HUANHUA PARIS LIMITED VERSION T-Shirt</option>
+              <option value="LUXIAOJUN Weightlifting Shoes - Blue Edition">LUXIAOJUN Weightlifting Shoes - Blue Edition</option>
+              <option value="LUXIAOJUN Weightlifting Shoes - Dirty Latte Edition">LUXIAOJUN Weightlifting Shoes - Dirty Latte Edition</option>
+              <option value="LUXIAOJUN Weightlifting Shoes - Power Orange Edition">LUXIAOJUN Weightlifting Shoes - Power Orange Edition</option>
+              <option value="LUXIAOJUN Women's Olympic Weightlifting Competition Bar">LUXIAOJUN Women's Olympic Weightlifting Competition Bar</option>
+              <option value="LUXIAOJUN PU change plates (pair)">LUXIAOJUN PU change plates (pair)</option>
+              <option value="LUXIAOJUN BarePower 2.0 Training Shoes (Crimson Glory)">LUXIAOJUN BarePower 2.0 Training Shoes (Crimson Glory)</option>
+              <option value="LUXIAOJUN BarePower 2.0 Training Shoes (Dragon)">LUXIAOJUN BarePower 2.0 Training Shoes (Dragon)</option>
+              <option value="LUXIAOJUN Weightlifting Shoes 'Paris' Limited Edition">LUXIAOJUN Weightlifting Shoes "Paris" Limited Edition</option>
+              <option value="LUXIAOJUN BarePower 1.0 Training Shoes (Mocha)">LUXIAOJUN BarePower 1.0 Training Shoes (Mocha)</option>
+              <option value="LUXIAOJUN BarePower 1.0 Training Shoes (Camel)">LUXIAOJUN BarePower 1.0 Training Shoes (Camel)</option>
+              <option value="LUXIAOJUN Bumper Plates (CAMOUFLAGE)">LUXIAOJUN Bumper Plates (CAMOUFLAGE)</option>
+              <option value="LUXIAOJUN L40 Weightlifting Strap">LUXIAOJUN L40 Weightlifting Strap</option>
+              <option value="LUXIAOJUN L50 Weightlifting Strap">LUXIAOJUN L50 Weightlifting Strap</option>
+              <option value="LUXIAOJUN 'QI' Slides - Avocado Edition">LUXIAOJUN 'QI' Slides - Avocado Edition</option>
+              <option value="LUXIAOJUN 'QI' Slides - Night Glide Edition">LUXIAOJUN 'QI' Slides - Night Glide Edition</option>
+              <option value="LUXIAOJUN 'QI' Slides - Violet Edition">LUXIAOJUN 'QI' Slides - Violet Edition</option>
+              <option value="LUXIAOJUN 'QI' Slides - Panda Edition">LUXIAOJUN 'QI' Slides - Panda Edition</option>
+              <option value="LUXIAOJUN 'QI' Slides - Dragon Red Edition">LUXIAOJUN 'QI' Slides - Dragon Red Edition</option>
+              <option value="Liquid Chalk (50ml)">Liquid Chalk (50ml)</option>
+              <option value="LUXIAOJUN BarePower 1.0 Training Shoes (Classic)">LUXIAOJUN BarePower 1.0 Training Shoes (Classic)</option>
+              <option value="LUXIAOJUN Weightlifting Shoes - Crimson Glory Edition">LUXIAOJUN Weightlifting Shoes - Crimson Glory Edition</option>
+              <option value="Gift Card 181">Gift Card 181</option>
+              <option value="LUXIAOJUN Drop Pad Set">LUXIAOJUN Drop Pad Set</option>
+              <option value="LUXIAOJUN Barbell Collar">LUXIAOJUN Barbell Collar</option>
+              <option value="LUXIAOJUN Technique Plate (pair)">LUXIAOJUN Technique Plate (pair)</option>
+              <option value="LUXIAOJUN BarePower 1.0 Training Shoes (Green)">LUXIAOJUN BarePower 1.0 Training Shoes (Green)</option>
+              <option value="LUXIAOJUN Leather Strap">LUXIAOJUN Leather Strap</option>
+              <option value="LUXIAOJUN BarePower 1.0 Training Shoes (Silver)">LUXIAOJUN BarePower 1.0 Training Shoes (Silver)</option>
+              <option value="LUXIAOJUN BarePower 1.0 Training Shoes (White)">LUXIAOJUN BarePower 1.0 Training Shoes (White)</option>
+              <option value="LUXIAOJUN BarePower 1.0 Training Shoes (Black)">LUXIAOJUN BarePower 1.0 Training Shoes (Black)</option>
+              <option value="LUXIAOJUN Leather Weightlifting Belt">LUXIAOJUN Leather Weightlifting Belt</option>
+              <option value="Disposable Palm Protector">Disposable Palm Protector</option>
+              <option value="LUXIAOJUN Chalk">LUXIAOJUN Chalk</option>
+              <option value="LUXIAOJUN AT100 Weightlifting Belt">LUXIAOJUN AT100 Weightlifting Belt</option>
+              <option value="LUXIAOJUN Fitness Glove">LUXIAOJUN Fitness Glove</option>
+              <option value="LUXIAOJUN Speed Rope">LUXIAOJUN Speed Rope</option>
+              <option value="LUXIAOJUN Knee Sleeves 5MM">LUXIAOJUN Knee Sleeves 5MM</option>
+              <option value="LUXIAOJUN Knee Sleeves 7mm">LUXIAOJUN Knee Sleeves 7mm</option>
+              <option value="LUXIAOJUN Weightlifting Shoes Turquoise">LUXIAOJUN Weightlifting Shoes Turquoise</option>
+              <option value="LUXIAOJUN Weightlifting Shoes 'Venus Gabby' Pink">LUXIAOJUN Weightlifting Shoes "Venus Gabby" Pink</option>
+              <option value="LUXIAOJUN Weightlifting Shoes Panda Edition">LUXIAOJUN Weightlifting Shoes Panda Edition</option>
+              <option value="LUXIAOJUN Professional Team Style Weightlifting Strap">LUXIAOJUN Professional Team Style Weightlifting Strap</option>
+              <option value="LUXIAOJUN Basic T-Shirt Premium">LUXIAOJUN Basic T-Shirt Premium</option>
+              <option value="LUXIAOJUN E1 MEN's Training Barbell">LUXIAOJUN E1 MEN's Training Barbell</option>
+              <option value="Leather Palm Protector">Leather Palm Protector</option>
+              <option value="LUXIAOJUN Bumper Plates (BASIC)">LUXIAOJUN Bumper Plates (BASIC)</option>
+              <option value="LUXIAOJUN Weightlifting Thumb Tape (1 box)">LUXIAOJUN Weightlifting Thumb Tape (1 box)</option>
+              <option value="LUXIAOJUN Weightlifting Shoes Black">LUXIAOJUN Weightlifting Shoes Black</option>
+              <option value="LUXIAOJUN Basic T-Shirt">LUXIAOJUN Basic T-Shirt</option>
+              <option value="LUXIAOJUN Nylon 4&quot; Lifting Belt">LUXIAOJUN Nylon 4" Lifting Belt</option>
+              <option value="LUXIAOJUN Daily Essentials Drawstring Bag">LUXIAOJUN Daily Essentials Drawstring Bag</option>
+              <option value="LUXIAOJUN Knee Sleeves Alpha 2.0">LUXIAOJUN Knee Sleeves Alpha 2.0</option>
+              <option value="LUXIAOJUN W80 Wrist Wraps">LUXIAOJUN W80 Wrist Wraps</option>
+              <option value="LUXIAOJUN E1 WOMEN's Training Barbell">LUXIAOJUN E1 WOMEN's Training Barbell</option>
+              <option value="LUXIAOJUN Competition Plates">LUXIAOJUN Competition Plates</option>
+              <option value="LUXIAOJUN Weightlifting Shoes Golden">LUXIAOJUN Weightlifting Shoes Golden</option>
+              <option value="LUXIAOJUN Weightlifting Shoes Silver">LUXIAOJUN Weightlifting Shoes Silver</option>
+              <option value="LUXIAOJUN Weightlifting Essentials C81 Knee Sleeves">LUXIAOJUN Weightlifting Essentials C81 Knee Sleeves</option>
+              <option value="LUXIAOJUN Cotton Wrist Wrap">LUXIAOJUN Cotton Wrist Wrap</option>
+              <option value="LUXIAOJUN L30 Weightlifting Strap">LUXIAOJUN L30 Weightlifting Strap</option>
+              <option value="LUXIAOJUN Weightlifting Shoes White">LUXIAOJUN Weightlifting Shoes White</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ws-field-group">
+          <label class="ws-label">Select Country</label>
+          <div class="ws-select-wrapper">
+            <select name="contact[country]" class="ws-select">
+              {{ country_option_tags }}
+            </select>
+          </div>
+        </div>
+
+        <div class="ws-field-group">
+          <label class="ws-label">Please check minimum amount from right table.</label>
+          <input type="number" name="contact[min_amount]" class="ws-input" placeholder="e.g. 5">
+        </div>
+
+        <div class="ws-field-group">
+          <label class="ws-label">Please share any additional info.</label>
+          <textarea name="contact[body]" class="ws-textarea"></textarea>
+        </div>
+
+        <button type="submit" class="ws-submit">SUBMIT</button>
+
+      {% endform %}
+    </div>
+
+    <div class="ws-table-col">
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>PRODUCT</th>
+            <th>MIN AMOUNT</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% comment %}
+            To allow you to edit this table easily in the customizer,
+            I am using blocks. If no blocks are added, it falls back to your image example.
+          {% endcomment %}
+          {%- for block in section.blocks -%}
+            <tr>
+              <td>{{ block.settings.product_name }}</td>
+              <td>{{ block.settings.min_amount }}</td>
+            </tr>
+          {%- else -%}
+            <tr><td>LUXIAOJUN E1 WOMEN's Training Barbell</td><td>5</td></tr>
+            <tr><td>LUXIAOJUN E1 MEN's Training Barbell</td><td>5</td></tr>
+            <tr><td>LUXIAOJUN W80 Wrist Wraps</td><td>50</td></tr>
+            <tr><td>LUXIAOJUN Cloth Wrist Wrap</td><td>50</td></tr>
+            <tr><td>LUXIAOJUN(LXJ) Weightlifting Shoes</td><td>50</td></tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Wholesale Inquiry",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "table_row",
+      "name": "Table Row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "product_name",
+          "label": "Product Name",
+          "default": "LUXIAOJUN Product"
+        },
+        {
+          "type": "text",
+          "id": "min_amount",
+          "label": "Min Amount",
+          "default": "50"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Wholesale Inquiry Form"
+    }
+  ]
+}
+{% endschema %}

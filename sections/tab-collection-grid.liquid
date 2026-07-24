@@ -1,0 +1,445 @@
+{%- style -%}
+/* Section Padding */
+.section-{{ section.id }}-padding {
+padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+}
+
+@media screen and (min-width: 750px) {
+.section-{{ section.id }}-padding {
+padding-top: {{ section.settings.padding_top }}px;
+padding-bottom: {{ section.settings.padding_bottom }}px;
+}
+}
+
+.tcg-header {
+margin-bottom: 20px;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+.tcg-tab-btn {
+background: none;
+border: none;
+color: #C1C1C1; 
+padding: 0;
+font-family: Bebas Neue;
+font-weight: 400;
+font-style: Regular;
+font-size: 48px;
+line-height: 60px;
+text-transform: uppercase;
+cursor: pointer;
+transition: color 0.3s ease;
+line-height: 1;
+}
+
+.tcg-tab-btn.active {
+color: #000000;
+font-family: Bebas Neue;
+font-weight: 400;
+font-size: 48px;
+line-height: 60px;
+letter-spacing: 0%;
+vertical-align: middle;
+text-transform: uppercase;
+}
+
+
+.tcg-separator {
+font-size: 44px;
+font-weight: 600;
+color: #000;
+margin: 0 5px;
+}
+.tcg-content {
+display: none;
+animation: fadeIn 0.5s ease;
+}
+
+.tcg-content.active {
+display: grid;
+grid-template-columns: 1fr 1fr; /* 50% Left, 50% Right */
+gap: 20px;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(5px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* Left Side: Large Banner */
+.tcg-main-card {
+position: relative;
+width: 100%;
+height: 100%;
+min-height: 600px;
+display: block;
+overflow: hidden;
+border-radius: 4px;
+max-height: 890px;
+}
+.tcg-main-img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+transition: transform 0.5s ease;
+object-position: top;
+}
+.tcg-main-card:hover .tcg-main-img {
+transform: scale(1.03);
+}
+
+/* Right Side: 2x2 Grid */
+.tcg-grid-wrapper {
+display: grid;
+grid-template-columns: 1fr 1fr;
+grid-template-rows: 1fr 1fr;
+gap:20px;
+}
+
+.tcg-sub-card {
+display: flex;
+flex-direction: column;
+align-items: center;
+text-decoration: none;
+color: inherit;
+background-color: #f8f8f8;
+padding: 20px;
+border-radius: 4px;
+transition: background 0.3s ease;
+justify-content: center;
+width: 100%;
+height: 100%;
+}
+.tcg-grid-wrapper-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    max-height: 400px;
+}
+.tcg-sub-card:hover {
+background-color: #f0f0f0;
+}
+
+.tcg-sub-img-wrap {
+width: 100%;
+height: 100%;
+display: flex;
+justify-content: center;
+align-items: center;
+margin-bottom: 15px;
+}
+
+.tcg-sub-img {
+max-width: 100%;
+max-height: 100%;
+object-fit: contain;
+mix-blend-mode: multiply; /* Helps remove white bg if image isn't transparent */
+}
+
+.tcg-sub-title {
+font-family: Instrument Sans;
+font-weight: 500;
+font-style: Medium;
+font-size: 16px;
+leading-trim: CAP_HEIGHT;
+line-height: 100%;
+letter-spacing: 0%;
+text-align: center;
+margin: 0;
+color: #000;
+}
+
+/* Mobile Responsive */
+@media screen and (max-width: 768px) {
+.tcg-tab-btn { font-size: 28px; }
+.tcg-tab-btn.active { font-size: 28px; }
+.tcg-separator { font-size: 28px; }
+
+.tcg-content.active {
+grid-template-columns: 1fr; /* Stack vertically */
+gap: 15px;
+}
+.tcg-sub-title{
+font-size: 14px;
+}
+.tcg-sub-img-wrap {
+width: 100%;
+height: 100%;
+}
+.tcg-main-card {
+min-height: 400px;
+}
+
+.tcg-grid-wrapper {
+gap: 15px;
+}
+}
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding container-x" id="TCG-{{ section.id }}">
+  
+  <div class="tcg-header">
+    {%- for block in section.blocks -%}
+      <button class="tcg-tab-btn {% if forloop.first %}active{% endif %}" data-target="tab-{{ block.id }}">
+        {{ block.settings.tab_name }}
+      </button>
+      {%- unless forloop.last -%}
+        <span class="tcg-separator">/</span>
+      {%- endunless -%}
+    {%- endfor -%}
+  </div>
+
+  {%- for block in section.blocks -%}
+    <div class="tcg-content {% if forloop.first %}active{% endif %}" id="tab-{{ block.id }}" {{ block.shopify_attributes }}>
+      
+      <a href="{{ block.settings.main_link }}" class="tcg-main-card">
+        {%- if block.settings.main_image != blank -%}
+          <img src="{{ block.settings.main_image | image_url: width: 1000 }}" loading="lazy" alt="{{ block.settings.tab_name }}" class="tcg-main-img">
+        {%- else -%}
+          {{ 'collection-1' | placeholder_svg_tag: 'tcg-main-img' }}
+        {%- endif -%}
+      </a>
+
+      <div class="tcg-grid-wrapper">
+      <div class="tcg-grid-wrapper-inner">
+        <a href="{{ block.settings.link_1 }}" class="tcg-sub-card">
+          <div class="tcg-sub-img-wrap">
+            {%- if block.settings.img_1 != blank -%}
+              <img src="{{ block.settings.img_1 | image_url: width: 1400 }}" loading="lazy" class="tcg-sub-img">
+            {%- else -%}
+              {{ 'product-1' | placeholder_svg_tag: 'tcg-sub-img' }}
+            {%- endif -%}
+          </div>
+        </a>
+        <span class="tcg-sub-title">{{ block.settings.text_1 }}</span>
+      </div>
+      <div class="tcg-grid-wrapper-inner">
+
+        <a href="{{ block.settings.link_2 }}" class="tcg-sub-card">
+          <div class="tcg-sub-img-wrap">
+            {%- if block.settings.img_2 != blank -%}
+              <img src="{{ block.settings.img_2 | image_url: width: 1400 }}" loading="lazy" class="tcg-sub-img">
+            {%- else -%}
+              {{ 'product-2' | placeholder_svg_tag: 'tcg-sub-img' }}
+            {%- endif -%}
+          </div>
+        </a>
+        <span class="tcg-sub-title">{{ block.settings.text_2 }}</span>
+      </div>
+      <div class="tcg-grid-wrapper-inner">
+
+        <a href="{{ block.settings.link_3 }}" class="tcg-sub-card">
+          <div class="tcg-sub-img-wrap">
+            {%- if block.settings.img_3 != blank -%}
+              <img src="{{ block.settings.img_3 | image_url: width: 1400 }}" loading="lazy" class="tcg-sub-img">
+            {%- else -%}
+              {{ 'product-3' | placeholder_svg_tag: 'tcg-sub-img' }}
+            {%- endif -%}
+          </div>
+        </a>
+        <span class="tcg-sub-title">{{ block.settings.text_3 }}</span>
+      </div>
+      <div class="tcg-grid-wrapper-inner">
+
+        <a href="{{ block.settings.link_4 }}" class="tcg-sub-card">
+          <div class="tcg-sub-img-wrap">
+            {%- if block.settings.img_4 != blank -%}
+              <img src="{{ block.settings.img_4 | image_url: width: 1400 }}" loading="lazy" class="tcg-sub-img">
+            {%- else -%}
+              {{ 'product-4' | placeholder_svg_tag: 'tcg-sub-img' }}
+            {%- endif -%}
+          </div>
+        </a>
+        <span class="tcg-sub-title">{{ block.settings.text_4 }}</span>
+      </div>
+
+      </div>
+    </div>
+  {%- endfor -%}
+
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const section = document.getElementById("TCG-{{ section.id }}");
+    const btns = section.querySelectorAll(".tcg-tab-btn");
+    const contents = section.querySelectorAll(".tcg-content");
+
+    btns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        // Remove active class from all
+        btns.forEach(b => b.classList.remove("active"));
+        contents.forEach(c => c.classList.remove("active"));
+
+        // Add active class to clicked
+        btn.classList.add("active");
+        const targetId = btn.getAttribute("data-target");
+        section.querySelector(`#${targetId}`).classList.add("active");
+      });
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Tabbed Grid Showcase",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Top Padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom Padding",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "tab_block",
+      "name": "Tab Content",
+      "limit": 2,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Tab Settings"
+        },
+        {
+          "type": "text",
+          "id": "tab_name",
+          "label": "Tab Name",
+          "default": "SHOP MEN'S"
+        },
+        {
+          "type": "header",
+          "content": "Large Left Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "main_image",
+          "label": "Main Image"
+        },
+        {
+          "type": "url",
+          "id": "main_link",
+          "label": "Main Image Link"
+        },
+        {
+          "type": "header",
+          "content": "Grid Item 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "img_1",
+          "label": "Image 1"
+        },
+        {
+          "type": "text",
+          "id": "text_1",
+          "label": "Title 1",
+          "default": "T-SHIRTS"
+        },
+        {
+          "type": "url",
+          "id": "link_1",
+          "label": "Link 1"
+        },
+        {
+          "type": "header",
+          "content": "Grid Item 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "img_2",
+          "label": "Image 2"
+        },
+        {
+          "type": "text",
+          "id": "text_2",
+          "label": "Title 2",
+          "default": "HOODIES"
+        },
+        {
+          "type": "url",
+          "id": "link_2",
+          "label": "Link 2"
+        },
+        {
+          "type": "header",
+          "content": "Grid Item 3"
+        },
+        {
+          "type": "image_picker",
+          "id": "img_3",
+          "label": "Image 3"
+        },
+        {
+          "type": "text",
+          "id": "text_3",
+          "label": "Title 3",
+          "default": "BOTTOMS"
+        },
+        {
+          "type": "url",
+          "id": "link_3",
+          "label": "Link 3"
+        },
+        {
+          "type": "header",
+          "content": "Grid Item 4"
+        },
+        {
+          "type": "image_picker",
+          "id": "img_4",
+          "label": "Image 4"
+        },
+        {
+          "type": "text",
+          "id": "text_4",
+          "label": "Title 4",
+          "default": "ACCESSORIES"
+        },
+        {
+          "type": "url",
+          "id": "link_4",
+          "label": "Link 4"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tabbed Grid Showcase",
+      "blocks": [
+        {
+          "type": "tab_block",
+          "settings": {
+            "tab_name": "SHOP MEN'S"
+          }
+        },
+        {
+          "type": "tab_block",
+          "settings": {
+            "tab_name": "SHOP WOMEN'S"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,329 @@
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --padding-top-desktop: {{ section.settings.padding_top_desktop }}px;
+    --padding-bottom-desktop: {{ section.settings.padding_bottom_desktop }}px;
+    --padding-top-mobile: {{ section.settings.padding_top_mobile }}px;
+    --padding-bottom-mobile: {{ section.settings.padding_bottom_mobile }}px;
+    --grid-gap: {{ section.settings.grid_gap }}px;
+    --text-color: {{ section.settings.text_color }};
+    --btn-bg: {{ section.settings.btn_bg_color }};
+    --btn-text: {{ section.settings.btn_text_color }};
+    --overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+}
+
+.section-container-{{ section.id }} {
+    background: #fff;
+    padding-top: var(--padding-top-desktop);
+    padding-bottom: var(--padding-bottom-desktop);
+  }
+
+  /* Grid Layout */
+  .category-grid-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 Columns on Desktop */
+    gap: var(--grid-gap);
+  }
+
+.category-card {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    overflow: hidden;
+    border-radius: 5px;
+    max-height: 555px;
+}
+  /* Image Handling */
+  .category-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: block;
+  }
+
+  /* Hover Effect: Zoom Image */
+  .category-card:hover img {
+    transform: scale(1.05);
+  }
+
+  /* Dark Overlay for text readability */
+  .category-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0, var(--overlay-opacity)), transparent 60%);
+    pointer-events: none;
+  }
+.category-content {
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+    padding: 20px;
+    text-align: center;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    max-width: 350px;
+    margin: 0 auto;
+}
+  /* Typography */
+  .category-title {
+    color: var(--text-color);
+    font-size: {{ section.settings.font_size_desktop }}px;
+   font-family: Bebas Neue;
+font-weight: 400;
+font-style: Regular;
+leading-trim: CAP_HEIGHT;
+line-height: 45px;
+letter-spacing: 0%;
+text-align: center;
+vertical-align: middle;
+text-transform: uppercase;
+margin: 0;
+  }
+
+  /* Button Styling */
+  .category-btn {
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+    padding: 14px 24px;
+    border-radius: 50px; /* Pill shape */
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: capitalize;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+  }
+
+  .category-card:hover .category-btn {
+    filter: brightness(1.1); /* Slightly lighter on hover */
+  }
+/* Mobile Responsive */
+  @media screen and (max-width: 768px) {
+    .section-container-{{ section.id }} {
+      padding-top: var(--padding-top-mobile);
+      padding-bottom: var(--padding-bottom-mobile);
+    }
+
+    .category-grid-wrapper {
+      /* Change to Flexbox for horizontal layout */
+      display: flex;
+      flex-wrap: nowrap; /* Prevent stacking */
+      overflow-x: auto; /* Allow horizontal scrolling */
+      
+      /* Enable CSS Scroll Snap */
+      scroll-snap-type: x mandatory; 
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+      
+      /* Spacing */
+      gap: 15px;
+      padding-left: 10px; /* Left padding so first item isn't glued to edge */
+      padding-right: 15px; /* Right padding for last item */
+      padding-bottom: 20px; /* Space for touch interaction */
+      
+      /* Hide Scrollbar for cleaner look */
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+    
+    /* Hide Scrollbar for Chrome/Safari/Opera */
+    .category-grid-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-card {
+      /* Force items to take up specific width (e.g., 85% of screen) */
+      flex: 0 0 85%; 
+      width: 85%;
+      
+      /* Snap alignment */
+      scroll-snap-align: center; 
+    }
+  }
+{%- endstyle -%}
+
+<div class="section-container-{{ section.id }}">
+  <div class="category-grid-wrapper container-x">
+    {%- for block in section.blocks -%}
+      <a href="{{ block.settings.link }}" class="category-card" {{ block.shopify_attributes }}>
+        
+        {%- if block.settings.image != blank -%}
+          {{ block.settings.image | image_url: width: 800 | image_tag: loading: 'lazy', alt: block.settings.title }}
+        {%- else -%}
+          {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {%- endif -%}
+
+        <div class="category-overlay"></div>
+
+        <div class="category-content">
+          <h3 class="category-title">{{ block.settings.title }}</h3>
+          {%- if block.settings.btn_text != blank -%}
+            <span class="category-btn theme-btn">{{ block.settings.btn_text }}</span>
+          {%- endif -%}
+        </div>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Grid",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Spacing (Padding)"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Top Padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Desktop Bottom Padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile Top Padding",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "label": "Mobile Bottom Padding",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap between images",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Typography & Colors"
+    },
+    {
+      "type": "range",
+      "id": "font_size_desktop",
+      "min": 16,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size (Desktop)",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Title Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg_color",
+      "label": "Button Background",
+      "default":"#D32F2F"
+    },
+    {
+      "type": "color",
+      "id": "btn_text_color",
+      "label": "Button Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Dark Gradient Opacity",
+      "info": "Darkens bottom of image so text is readable",
+      "default": 60
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Category Card",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "WEIGHTLIFTING SHOES"
+        },
+        {
+          "type": "text",
+          "id": "btn_text",
+          "label": "Button Label",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Grid",
+      "blocks": [
+        {
+          "type": "card"
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "WEIGHTLIFTING GEARS"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "title": "WEIGHTLIFTING EQUIPMENT"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

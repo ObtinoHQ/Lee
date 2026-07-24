@@ -1,0 +1,79 @@
+{%- style -%}
+  .lx-meta-tags-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    /* Uses the variables defined in the inline style below */
+    gap: var(--tags-gap-vertical) var(--tags-gap-horizontal);
+  }
+
+  .lx-meta-tags-item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    color: var(--tags-text-color);
+    border: 1px solid var(--tags-border-color);
+    font-size: var(--tags-font-size);
+    padding: 0 var(--tags-padding);
+    border-radius: var(--tags-border-radius);
+    height: var(--tags-height);
+    
+    /* Optional: prevents text wrapping inside the bubble */
+    white-space: nowrap;
+    box-sizing: border-box;
+  }
+
+  .lx-meta-tags-item img {
+    width: var(--tags-icon-size);
+    height: var(--tags-icon-size);
+    object-fit: contain;
+    margin-right: 8px; /* Space between icon and text */
+    display: block;
+  }
+{%- endstyle -%}
+
+<div class="lx-meta-tags-row" style="
+  --tags-text-color: {{ block.settings.text_color }};
+  --tags-border-color: {{ block.settings.border_color }};
+  --tags-font-size: {{ block.settings.font_size }}px;
+  --tags-padding: {{ block.settings.padding }}px;
+  --tags-border-radius: {{ block.settings.border_radius }}px;
+  --tags-gap-horizontal: {{ block.settings.gap_horizontal }}px;
+  --tags-gap-vertical: {{ block.settings.gap_vertical }}px;
+  --tags-icon-size: {{ block.settings.icon_size }}px;
+  --tags-height: {{ block.settings.height }}px;
+">
+  
+  {%- comment -%} TAG 1 {%- endcomment -%}
+  {%- if block.settings.text_1 != blank -%}
+    <div class="lx-meta-tags-item">
+      {%- if block.settings.icon_1 != blank -%}
+        {{ block.settings.icon_1 | image_url: width: 60 | image_tag: loading: 'lazy', alt: block.settings.text_1 }}
+      {%- endif -%}
+      <span>{{ block.settings.text_1 }}</span>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} TAG 2 {%- endcomment -%}
+  {%- if block.settings.text_2 != blank -%}
+    <div class="lx-meta-tags-item">
+      {%- if block.settings.icon_2 != blank -%}
+        {{ block.settings.icon_2 | image_url: width: 60 | image_tag: loading: 'lazy', alt: block.settings.text_2 }}
+      {%- endif -%}
+      <span>{{ block.settings.text_2 }}</span>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} TAG 3 {%- endcomment -%}
+  {%- if block.settings.text_3 != blank -%}
+    <div class="lx-meta-tags-item">
+      {%- if block.settings.icon_3 != blank -%}
+        {{ block.settings.icon_3 | image_url: width: 60 | image_tag: loading: 'lazy', alt: block.settings.text_3 }}
+      {%- endif -%}
+      <span>{{ block.settings.text_3 }}</span>
+    </div>
+  {%- endif -%}
+
+</div>
+

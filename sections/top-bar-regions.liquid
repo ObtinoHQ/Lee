@@ -1,0 +1,166 @@
+{% schema %}
+{
+  "name": "Top Bar Region Selector",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "abbr_color",
+      "label": "Abbreviation Color",
+      "default": "#f4a261",
+      "info": "Color for EU, AU, GB text"
+    },
+    {
+      "type": "header",
+      "content": "Social Media (Left)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show Social Icons",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Mobile Settings"
+    },
+    {
+      "type": "text",
+      "id": "mobile_label",
+      "label": "Mobile Dropdown Label",
+      "default": "Select Region",
+      "info": "Text shown on the mobile button"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "region",
+      "name": "Region Link",
+      "settings": [
+        {
+          "type": "text",
+          "id": "abbr",
+          "label": "Abbreviation",
+          "default": "EU",
+          "info": "e.g. EU, GB, AU"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Country Name",
+          "default": "Europe"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link URL",
+          "info": "e.g. /en-eu or https://us.site.com"
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Custom Icon/Flag (Optional)",
+          "info": "Replaces the text abbreviation if uploaded"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Top Bar Region Selector",
+      "blocks": [
+        { "type": "region", "settings": { "abbr": "EU", "label": "Europe", "link": "/en" } },
+        { "type": "region", "settings": { "abbr": "AU", "label": "Australia", "link": "/au" } },
+        { "type": "region", "settings": { "abbr": "GB", "label": "United Kingdom", "link": "/uk" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
+{% style %}
+  .section-{{ section.id }}-bar { background-color: {{ section.settings.bg_color }}; color: {{ section.settings.text_color }}; padding: 10px 0; font-size: 14px; line-height: 1.2; position: relative; z-index: 50; }
+  .tb-container { display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+  .tb-socials { display: flex; gap: 15px; align-items: center; }
+  .tb-socials svg { width: 20px; height: 20px; }
+  .tb-socials .list-social { gap: 10px; display: flex; flex-wrap: wrap; justify-content: flex-start; margin: 0; padding: 0; list-style: none; }
+  .tb-regions-wrapper { position: relative; }
+  .tb-regions-list { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .tb-region-link { display: inline-flex; align-items: center; text-decoration: none; color: {{ section.settings.text_color }}; font-weight: 500; transition: opacity 0.2s; font-family: inherit; white-space: nowrap; }
+  .tb-region-link:hover { opacity: 0.8; }
+  .tb-abbr { color: {{ section.settings.abbr_color }}; font-weight: 500; text-transform: uppercase; margin-right: 6px; font-family: 'Bebas Neue', sans-serif; font-size: 17px; }
+  .tb-flag-icon { width: 20px; height: auto; margin-right: 6px; display: block; }
+  .tb-label { opacity: 0.9; }
+  .tb-mobile-trigger { display: none; background: transparent; border: none; color: {{ section.settings.text_color }}; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; align-items: center; gap: 8px; width: 100%; justify-content: space-between; }
+  .tb-mobile-trigger svg { width: 10px; height: 10px; fill: currentColor; transition: transform 0.3s ease; }
+  .tb-regions-wrapper.is-open .tb-mobile-trigger svg { transform: rotate(180deg); }
+  @media (max-width: 768px) {
+    span.tb-label {
+    font-size: 12px;
+}
+.tb-abbr {
+    font-size: 12px;
+}
+    .tb-socials { width: 100%; }
+    .tb-socials .list-social { justify-content: center; }
+    .tb-regions-wrapper { width: 80%; }
+    .tb-mobile-trigger { display: flex; }
+    .tb-regions-list { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background-color: {{ section.settings.bg_color }}; border-top: none; z-index: 100; padding: 10px 0; gap: 0; }
+    .tb-regions-wrapper.is-open .tb-regions-list { display: flex; }
+    .tb-region-link { width: 100%; padding: 10px 20px; border-bottom: 1px solid {{ section.settings.text_color | color_modify: 'alpha', 0.1 }}; }
+    .tb-region-link:last-child { border-bottom: none; }
+  }
+{% endstyle %}
+
+<div class="section-{{ section.id }}-bar" id="TopBar-{{ section.id }}">
+  <div class="tb-container container-x">
+    <div class="tb-socials">
+      {% if section.settings.show_social %}
+        {% render 'social-icons' %}
+      {% endif %}
+    </div>
+    <div class="tb-regions-wrapper">
+      <button class="tb-mobile-trigger" onclick="document.querySelector('#TopBar-{{ section.id }} .tb-regions-wrapper').classList.toggle('is-open')">
+        <span>{{ section.settings.mobile_label }}</span>
+        <svg viewBox="0 0 12 8"><path d="M1.41 0.589996L6 5.17L10.59 0.589996L12 2L6 8L0 2L1.41 0.589996Z"></path></svg>
+      </button>
+      <div class="tb-regions-list">
+        {% for block in section.blocks %}
+          <a href="{{ block.settings.link }}" class="tb-region-link">
+            {% if block.settings.icon != blank %}
+              <img src="{{ block.settings.icon | image_url: width: 40 }}" class="tb-flag-icon" alt="{{ block.settings.abbr }}" loading="lazy">
+            {% else %}
+              <span class="tb-abbr">{{ block.settings.abbr }}</span>
+            {% endif %}
+            <span class="tb-label">{{ block.settings.label }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('click', function(event) {
+    var wrapper = document.querySelector('#TopBar-{{ section.id }} .tb-regions-wrapper');
+    var isClickInside = wrapper.contains(event.target);
+    if (!isClickInside && wrapper.classList.contains('is-open')) {
+      wrapper.classList.remove('is-open');
+    }
+  });
+</script>

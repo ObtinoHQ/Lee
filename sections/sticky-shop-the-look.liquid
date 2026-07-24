@@ -1,0 +1,365 @@
+{%- style -%}
+.section-{{ section.id }}-padding {
+  padding-top: {{ section.settings.padding_top_mobile }}px;
+  padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  background-color: {{ section.settings.bg_color }};
+}
+
+@media screen and (min-width: 750px) {
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_desktop }}px;
+    padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+  }
+}
+
+.stl-header {
+  text-align: {{ section.settings.text_alignment }};
+  margin-bottom: 20px;
+}
+
+.stl-header h2 {
+  margin: 0;
+  font-size: {{ section.settings.heading_size }}px;
+  color: {{ section.settings.text_color }};
+  font-family: Bebas Neue;
+  font-weight: 400;
+  line-height: 60px;
+  letter-spacing: 0%;
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+
+.stl-main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media screen and (min-width: 990px) {
+  .stl-main-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+}
+
+.stl-sticky-wrapper {
+  position: relative;
+  height: 100%;
+}
+
+/* Updated selector to target img AND video */
+.stl-sticky-media {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 4px;
+  min-height: 400px;
+}
+
+@media screen and (min-width: 990px) {
+  .stl-sticky-wrapper {
+    position: sticky;
+    top: 20px;
+  }
+
+  .stl-sticky-media {
+    aspect-ratio: 3 / 4;
+    max-height: 900px;
+  }
+}
+
+.stl-product-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+@media screen and (min-width: 750px) {
+  .stl-product-list {
+    gap: 20px;
+  }
+}
+.stl-grid-item .card__inner{
+    height: 100%;
+    max-height: 335px;
+}
+@media screen and (max-width: 800px) {
+  .stl-grid-item .card__inner {
+    height: 100%;
+    max-height: 300px;
+}
+  .stl-header h2 {
+    font-size: 28px;
+    margin: 0;
+    line-height: 100%;
+  }
+}
+@media screen and (max-width: 500px) {
+  .stl-grid-item .card__inner {
+    height: 100%;
+    max-height: 200px;
+}
+}
+/* Link wrapper style */
+.stl-sticky-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+}
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding">
+  <div class="stl-container container-x">
+    
+    {% if section.settings.heading != blank %}
+      <div class="stl-header">
+        <h2>{{ section.settings.heading }}</h2>
+      </div>
+    {% endif %}
+
+    <div class="stl-main-grid">
+      
+      <div class="stl-sticky-wrapper">
+        {%- if section.settings.image_link != blank -%}
+          <a href="{{ section.settings.image_link }}" class="stl-sticky-link">
+        {%- endif -%}
+
+        {% comment %} VIDEO LOGIC START {% endcomment %}
+        {% if section.settings.main_video != blank %}
+          {{ section.settings.main_video | video_tag: 
+            image_size: '1100x', 
+            autoplay: section.settings.video_autoplay, 
+            loop: section.settings.video_loop, 
+            controls: section.settings.video_controls, 
+            muted: section.settings.video_muted,
+            class: 'stl-sticky-media' 
+          }}
+        {% elsif section.settings.main_image != blank %}
+          {{ section.settings.main_image | image_url: width: 2000 | image_tag: loading: 'lazy', class: 'stl-sticky-media' }}
+        {% else %}
+          {{ 'collection-1' | placeholder_svg_tag: 'stl-sticky-media' }}
+        {% endif %}
+        {% comment %} VIDEO LOGIC END {% endcomment %}
+
+        {%- if section.settings.image_link != blank -%}
+          </a>
+        {%- endif -%}
+      </div>
+
+      <div class="stl-product-list">
+        {% for block in section.blocks %}
+          {%- assign product = block.settings.product -%}
+          
+          <div class="stl-grid-item" {{ block.shopify_attributes }}>
+            {%- if product != blank -%}
+              {% render 'card-product',
+                card_product: product,
+                media_aspect_ratio: section.settings.image_ratio,
+                image_shape: section.settings.image_shape,
+                show_secondary_image: section.settings.show_secondary_image,
+                show_vendor: section.settings.show_vendor,
+                show_rating: section.settings.show_rating,
+                lazy_load: true
+              %}
+            {%- else -%}
+              {% render 'card-product', show_vendor: false %}
+            {%- endif -%}
+          </div>
+
+        {% endfor %}
+      </div>
+      
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Sticky Shop The Look",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "SHOP THE LOOK"
+    },
+    {
+      "type": "url",
+      "id": "image_link",
+      "label": "Link (Applies to Image or Video)"
+    },
+    {
+      "type": "header",
+      "content": "Main Media (Left)"
+    },
+    {
+      "type": "image_picker",
+      "id": "main_image",
+      "label": "Main Image"
+    },
+    {
+      "type": "video",
+      "id": "main_video",
+      "label": "Main Video",
+      "info": "If a video is selected, it will replace the image."
+    },
+    {
+      "type": "checkbox",
+      "id": "video_autoplay",
+      "label": "Autoplay Video",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "video_loop",
+      "label": "Loop Video",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "video_muted",
+      "label": "Mute Video",
+      "default": true,
+      "info": "Autoplay videos usually require muting on most browsers."
+    },
+    {
+      "type": "checkbox",
+      "id": "video_controls",
+      "label": "Show Video Controls",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Product Card Settings"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "options": [
+        { "value": "adapt", "label": "Adapt to image" },
+        { "value": "portrait", "label": "Portrait" },
+        { "value": "square", "label": "Square" }
+      ],
+      "default": "portrait",
+      "label": "Image Ratio"
+    },
+    {
+      "type": "select",
+      "id": "image_shape",
+      "options": [
+        { "value": "default", "label": "Default" },
+        { "value": "arch", "label": "Arch" },
+        { "value": "blob", "label": "Blob" },
+        { "value": "round", "label": "Round" }
+      ],
+      "default": "default",
+      "label": "Image Shape"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "default": false,
+      "label": "Show second image on hover"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "default": false,
+      "label": "Show Vendor"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "default": false,
+      "label": "Show Product Rating"
+    },
+    {
+      "type": "header",
+      "content": "Styling"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Heading Size",
+      "default": 36
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Heading Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Top Padding (Desktop)", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 0, "max": 100, "step": 4, "unit": "px", "label": "Bottom Padding (Desktop)", "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Top Padding (Mobile)", "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0, "max": 80, "step": 4, "unit": "px", "label": "Bottom Padding (Mobile)", "default": 32
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky Shop The Look",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
+    }
+  ]
+}
+{% endschema %}

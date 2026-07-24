@@ -1,0 +1,280 @@
+{% comment %}
+  -----------------------------------------------------------------------------
+  Video Hero Banner Section (Native Video Picker)
+  - Full clickable area
+  - Uses Shopify's native video selector
+  - Inherits theme fonts completely
+  -----------------------------------------------------------------------------
+{% endcomment %}
+
+{% style %}
+  /* --- Base Styles --- */
+  .vid-hero-wrapper {
+    position: relative;
+    width: 100%;
+    display: block; /* Makes the <a> tag a block container */
+    text-decoration: none;
+    overflow: hidden;
+    background-color: #000;
+  }
+
+  /* Video Element Styling */
+  .vid-hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Crucial: Ensures video fills the box */
+    z-index: 0;
+  }
+
+  /* Overlay */
+  .vid-hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, {{ section.settings.overlay_opacity | divided_by: 100.0 }});
+    z-index: 1;
+    transition: background 0.3s ease;
+  }
+
+  .vid-hero-wrapper:hover .vid-hero-overlay {
+    background: rgba(0, 0, 0, {{ section.settings.overlay_opacity | minus: 15 | divided_by: 100.0 | at_least: 0 }});
+  }
+
+  /* Content */
+  .vid-hero-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .vid-hero-heading {
+    font-family: Bebas Neue;
+    color: #ffffff;
+    font-size: 82px;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+        margin: 0px;
+  }
+
+  .vid-hero-subheading {
+    font-family: Instrument Sans;
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 16px;
+    leading-trim: CAP_HEIGHT;
+    line-height: 100%;
+    letter-spacing: 0%;
+    margin-bottom: 20px;
+    color: white;
+  }
+
+  .vid-hero-wrapper.desktop-height-fixed {
+    height: {{ section.settings.desktop_height_value }}{{ section.settings.desktop_height_unit }};
+  }
+
+  .vid-hero-wrapper.desktop-height-auto {
+    height: auto;
+    display: block;
+  }
+  .vid-hero-wrapper.desktop-height-auto .vid-hero-video {
+    position: relative;
+    height: auto;
+    width: 100%;
+    display: block;
+  }
+  .vid-hero-wrapper.desktop-height-auto .vid-hero-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+
+  /* --- Mobile Responsive Logic --- */
+  @media only screen and (max-width: 768px) {
+    .vid-hero-heading {
+      font-size: 42px;
+    }
+
+    /* Reset desktop styles */
+    .vid-hero-wrapper.desktop-height-auto .vid-hero-video { position: absolute; height: 100%; }
+    .vid-hero-wrapper.desktop-height-auto { height: auto; }
+
+    /* Mobile Fixed Height */
+    .vid-hero-wrapper.mobile-height-fixed {
+      height: {{ section.settings.mobile_height_value }}{{ section.settings.mobile_height_unit }} !important;
+    }
+    .vid-hero-wrapper.mobile-height-fixed .vid-hero-video {
+       position: absolute;
+       height: 100%;
+    }
+
+    /* Mobile Auto Height */
+    .vid-hero-wrapper.mobile-height-auto {
+      height: auto !important;
+    }
+    .vid-hero-wrapper.mobile-height-auto .vid-hero-video {
+      position: relative !important;
+      height: auto !important;
+      width: 100%;
+    }
+    .vid-hero-wrapper.mobile-height-auto .vid-hero-content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+    }
+  }
+{% endstyle %}
+
+{% comment %} Class Logic {% endcomment %}
+{% assign desktop_class = 'desktop-height-fixed' %}
+{% if section.settings.desktop_height_unit == 'auto' %}
+  {% assign desktop_class = 'desktop-height-auto' %}
+{% endif %}
+
+{% assign mobile_class = 'mobile-height-fixed' %}
+{% if section.settings.mobile_height_unit == 'auto' %}
+  {% assign mobile_class = 'mobile-height-auto' %}
+{% endif %}
+
+<a href="{{ section.settings.link_url }}" class="vid-hero-wrapper {{ desktop_class }} {{ mobile_class }}">
+  
+  {%- if section.settings.video_hosted != blank -%}
+    {% comment %} 
+      Using Shopify's 'video_tag' filter automatically handles 
+      autoplay, loop, muted, and format support.
+    {% endcomment %}
+    {{ section.settings.video_hosted 
+      | video_tag: 
+        image_size: 'master', 
+        autoplay: true, 
+        loop: true, 
+        muted: true, 
+        controls: false, 
+        class: 'vid-hero-video' 
+    }}
+  {%- else -%}
+    <div class="vid-hero-video" style="background-color: #444; display: flex; align-items: center; justify-content: center; color: #ccc;">
+      <p>Select a video in settings</p>
+    </div>
+  {%- endif -%}
+
+  <div class="vid-hero-overlay"></div>
+
+  <div class="vid-hero-content">
+    {%- if section.settings.heading_text != blank -%}
+      <h2 class="vid-hero-heading">{{ section.settings.heading_text }}</h2>
+    {%- endif -%}
+    
+    {%- if section.settings.subheading_text != blank -%}
+      <p class="vid-hero-subheading">{{ section.settings.subheading_text }}</p>
+    {%- endif -%}
+  </div>
+</a>
+
+{% schema %}
+{
+  "name": "Video Hero Banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Video Content"
+    },
+    {
+      "type": "video",
+      "id": "video_hosted",
+      "label": "Video"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading",
+      "default": "PREMIUM GEAR FOR EVERY LIFT"
+    },
+    {
+      "type": "text",
+      "id": "subheading_text",
+      "label": "Subheading",
+      "default": "Built for strength. Designed to last."
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay Opacity",
+      "default": 35
+    },
+    {
+      "type": "header",
+      "content": "Desktop Sizing"
+    },
+    {
+      "type": "select",
+      "id": "desktop_height_unit",
+      "label": "Desktop Unit",
+      "options": [
+        { "value": "px", "label": "Pixels (px)" },
+        { "value": "vh", "label": "Viewport Height (vh)" },
+        { "value": "auto", "label": "Auto (Natural Aspect Ratio)" }
+      ],
+      "default": "px"
+    },
+    {
+      "type": "text",
+      "id": "desktop_height_value",
+      "label": "Desktop Value",
+      "default": "500",
+      "info": "Number only. Ignored if Auto."
+    },
+    {
+      "type": "header",
+      "content": "Mobile Sizing"
+    },
+    {
+      "type": "select",
+      "id": "mobile_height_unit",
+      "label": "Mobile Unit",
+      "options": [
+        { "value": "px", "label": "Pixels (px)" },
+        { "value": "vh", "label": "Viewport Height (vh)" },
+        { "value": "auto", "label": "Auto (Natural Aspect Ratio)" }
+      ],
+      "default": "px"
+    },
+    {
+      "type": "text",
+      "id": "mobile_height_value",
+      "label": "Mobile Value",
+      "default": "300",
+      "info": "Number only. Ignored if Auto."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Video Hero Banner"
+    }
+  ]
+}
+{% endschema %}

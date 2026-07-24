@@ -1,0 +1,400 @@
+{% assign active_block = nil %}
+
+{% for block in section.blocks %}
+  {% if product.tags contains block.settings.trigger_tag or product.type == block.settings.trigger_tag %}
+    {% assign active_block = block %}
+    {% if block.type == 'footwear' %}
+      {% break %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% if active_block %}
+
+<size-guide-modal section-id="{{ section.id }}">
+  <button type="button" class="sg-btn" data-trigger>
+    {{ section.settings.trigger_label | default: "Size Guide" }}
+  </button>
+
+  <div data-teleport-target hidden>
+    <div class="sg-overlay" data-overlay></div>
+    <div class="sg-modal" data-modal>
+      <div class="sg-card">
+        
+        <div class="sg-header">
+          <h2 class="sg-title">{{ active_block.settings.title }}</h2>
+
+          <div class="sg-toggle-wrapper">
+            <span class="sg-label-text sg-label-cm is-active" data-type="cm">
+              {{ section.settings.label_cm | default: 'CM' }}
+            </span>
+            
+            <label class="sg-toggle">
+              <input type="checkbox" class="sg-unit-toggle">
+              <span class="sg-slider"></span>
+            </label>
+
+            <span class="sg-label-text sg-label-in" data-type="in">
+              {{ section.settings.label_in | default: 'IN' }}
+            </span>
+          </div>
+          
+          <button type="button" class="sg-close" data-close>
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 17" fill="none"><path fill="currentColor" d="M.865 15.978a.5.5 0 0 0 .707.707l7.433-7.431 7.579 7.282a.501.501 0 0 0 .846-.37.5.5 0 0 0-.153-.351L9.712 8.546l7.417-7.416a.5.5 0 1 0-.707-.708L8.991 7.853 1.413.573a.5.5 0 1 0-.693.72l7.563 7.268z"></path></svg>
+          </button>
+        </div>
+        
+        <div class="sg-body">
+          <div class="sg-meta">
+            <p><strong>{{ active_block.settings.fit_label }}</strong> {{ active_block.settings.fit_text }}</p>
+            <p><strong>{{ active_block.settings.model_label }}</strong> {{ active_block.settings.model_text }}</p>
+          </div>
+
+          <div class="sg-table">
+            
+{% if active_block.type == 'apparel' %}
+  {% assign mode = active_block.settings.display_mode %}
+
+  <div class="sg-content-wrapper">
+    {% if mode == 'table' or mode == 'both' %}
+      
+      {% assign col_count = 1 %}
+      
+      {% assign show_c2 = false %}
+      {% if active_block.settings.show_col_2 and active_block.settings.col_2_label != blank %}
+        {% assign show_c2 = true %}
+        {% assign col_count = col_count | plus: 1 %}
+      {% endif %}
+
+      {% assign show_c3 = false %}
+      {% if active_block.settings.show_col_3 and active_block.settings.col_3_label != blank %}
+        {% assign show_c3 = true %}
+        {% assign col_count = col_count | plus: 1 %}
+      {% endif %}
+
+      {% assign show_c4 = false %}
+      {% if active_block.settings.show_col_4 and active_block.settings.col_4_label != blank %}
+        {% assign show_c4 = true %}
+        {% assign col_count = col_count | plus: 1 %}
+      {% endif %}
+
+      {% assign show_c5 = false %}
+      {% if active_block.settings.show_col_5 and active_block.settings.col_5_label != blank %}
+        {% assign show_c5 = true %}
+        {% assign col_count = col_count | plus: 1 %}
+      {% endif %}
+
+      <div class="sg-table-container" style="--grid-cols: {{ col_count }};">
+        
+        <div class="sg-row sg-row--head">
+          <div class="sg-size-label">{{ active_block.settings.col_1_label }}</div>
+          {% if show_c2 %}<div class="sg-cell">{{ active_block.settings.col_2_label }}</div>{% endif %}
+          {% if show_c3 %}<div class="sg-cell">{{ active_block.settings.col_3_label }}</div>{% endif %}
+          {% if show_c4 %}<div class="sg-cell">{{ active_block.settings.col_4_label }}</div>{% endif %}
+          {% if show_c5 %}<div class="sg-cell">{{ active_block.settings.col_5_label }}</div>{% endif %}
+        </div>
+
+        {% assign size_list = "xs,s,m,l,xl,xxl,xxxl" | split: ',' %}
+        {% for size in size_list %}
+          {% capture show_row_key %}show_row_{{ size }}{% endcapture %}
+          {% if active_block.settings[show_row_key] %}
+            <div class="sg-row">
+              <div class="sg-size-label">{{ size | upcase }}</div>
+              
+              {% if show_c2 %}
+                {% capture val_key %}{{ size }}_col_2_val{% endcapture %}
+                <div class="sg-cell">{{ active_block.settings[val_key] }}</div>
+              {% endif %}
+
+              {% if show_c3 %}
+                {% capture cm_key %}{{ size }}_col_3_cm{% endcapture %}
+                {% capture in_key %}{{ size }}_col_3_in{% endcapture %}
+                <div class="sg-cell" data-measurement data-cm="{{ active_block.settings[cm_key] }}" data-in="{{ active_block.settings[in_key] }}">
+                  {{ active_block.settings[cm_key] }}
+                </div>
+              {% endif %}
+
+              {% if show_c4 %}
+                {% capture cm_key %}{{ size }}_col_4_cm{% endcapture %}
+                {% capture in_key %}{{ size }}_col_4_in{% endcapture %}
+                <div class="sg-cell" data-measurement data-cm="{{ active_block.settings[cm_key] }}" data-in="{{ active_block.settings[in_key] }}">
+                  {{ active_block.settings[cm_key] }}
+                </div>
+              {% endif %}
+
+              {% if show_c5 %}
+                {% capture cm_key %}{{ size }}_col_5_cm{% endcapture %}
+                {% capture in_key %}{{ size }}_col_5_in{% endcapture %}
+                <div class="sg-cell" data-measurement data-cm="{{ active_block.settings[cm_key] }}" data-in="{{ active_block.settings[in_key] }}">
+                  {{ active_block.settings[cm_key] }}
+                </div>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if mode == 'image' or mode == 'both' %}
+      {% if active_block.settings.guide_image != blank %}
+        <div class="sg-big-image-container">
+          <img src="{{ active_block.settings.guide_image | img_url: '1000x' }}" alt="Sizing Guide Reference" class="sg-main-guide-img">
+        </div>
+      {% endif %}
+    {% endif %}
+
+  </div>
+
+{% elsif active_block.type == 'footwear' %}
+
+  <div class="sg-row sg-row--head sg-grid-4">
+    <div>{{ active_block.settings.col_label_1 }}</div>
+    <div>{{ active_block.settings.col_label_2 }}</div>
+    <div>{{ active_block.settings.col_label_3 }}</div>
+    <div>{{ active_block.settings.col_label_4 }}</div>
+  </div>
+
+  {% assign raw_lines = active_block.settings.table_data | newline_to_br | strip_newlines | split: '<br />' %}
+  
+  {% for line in raw_lines %}
+    {% assign cols = line | split: ',' %}
+    {% if cols.size > 1 %}
+      <div class="sg-row sg-grid-4">
+        <div>{{ cols[0] | strip }}</div>
+        <div>{{ cols[1] | strip }}</div>
+        <div>{{ cols[2] | strip }}</div>
+        <div data-measurement data-cm="{{ cols[3] | strip }}" data-in="{{ cols[4] | strip }}">
+          {{ cols[3] | strip }}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+
+{% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</size-guide-modal>
+
+<script>
+  class SizeGuideModal extends HTMLElement {
+    constructor() {
+      super();
+      this.open = this.open.bind(this);
+      this.close = this.close.bind(this);
+      this.handleToggle = this.handleToggle.bind(this);
+      this.handleKeydown = this.handleKeydown.bind(this);
+    }
+
+    connectedCallback() {
+      this.triggerBtn = this.querySelector('[data-trigger]');
+      this.overlay = this.querySelector('[data-overlay]');
+      this.modal = this.querySelector('[data-modal]');
+      this.closeBtn = this.querySelector('[data-close]');
+      this.toggle = this.querySelector('.sg-unit-toggle'); 
+      this.measurements = this.querySelectorAll('[data-measurement]');
+      this.labelsCM = this.querySelectorAll('.sg-label-cm');
+      this.labelsIN = this.querySelectorAll('.sg-label-in');
+
+      if (this.triggerBtn) this.triggerBtn.addEventListener('click', this.open);
+      if (this.closeBtn) this.closeBtn.addEventListener('click', this.close);
+      if (this.overlay) this.overlay.addEventListener('click', this.close);
+      if (this.toggle) this.toggle.addEventListener('change', this.handleToggle);
+    }
+
+    teleportToBody() {
+      if (this.teleported) return;
+      document.body.appendChild(this.overlay);
+      document.body.appendChild(this.modal);
+      this.teleported = true;
+    }
+
+    open() {
+      this.teleportToBody();
+      requestAnimationFrame(() => {
+        this.overlay.hidden = false;
+        this.modal.hidden = false;
+        setTimeout(() => {
+          this.overlay.classList.add('is-open');
+          this.modal.classList.add('is-open');
+          document.body.classList.add('sg--lock');
+          document.addEventListener('keydown', this.handleKeydown);
+        }, 10);
+      });
+    }
+
+    close() {
+      this.overlay.classList.remove('is-open');
+      this.modal.classList.remove('is-open');
+      document.body.classList.remove('sg--lock');
+      document.removeEventListener('keydown', this.handleKeydown);
+      setTimeout(() => {
+        this.overlay.hidden = true;
+        this.modal.hidden = true;
+      }, 300);
+    }
+
+    handleKeydown(e) {
+      if (e.key === 'Escape') this.close();
+    }
+
+    handleToggle(e) {
+      this.measurements.forEach(el => {
+        const val = this.toggle.checked ? el.dataset.in : el.dataset.cm;
+        if(val && val.trim() !== "") el.textContent = val;
+      });
+
+      if(this.toggle.checked) {
+        this.labelsIN.forEach(l => l.classList.add('is-active'));
+        this.labelsCM.forEach(l => l.classList.remove('is-active'));
+      } else {
+        this.labelsCM.forEach(l => l.classList.add('is-active'));
+        this.labelsIN.forEach(l => l.classList.remove('is-active'));
+      }
+    }
+  }
+
+  customElements.define('size-guide-modal', SizeGuideModal);
+</script>
+
+<style>
+size-guide-modal {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: -5px;
+}
+.sg-btn {
+    font-size: 14px;
+    text-decoration: underline;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    color: black;
+}
+  
+  .sg-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.4); z-index: 9998;
+    opacity: 0; visibility: hidden; transition: opacity 0.3s ease;
+  }
+  .sg-overlay.is-open { opacity: 1; visibility: visible; display: block; }
+
+  .sg-modal {
+    position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    z-index: 9999; width: 90%; max-width: 800px;
+    opacity: 0; visibility: hidden; transition: 0.3s;
+  }
+  .sg-modal.is-open { opacity: 1; visibility: visible; }
+  
+  .sg-card {
+    background: white; width: 100%; max-height: 85vh; overflow: auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative;
+  }
+
+  .sg-header {
+    padding: 15px 20px; border-bottom: 1px solid #eee; text-align: center; position: relative;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sg-title { margin: 0; font-size: 16px; text-transform: uppercase; letter-spacing: 1px; flex-grow: 1; text-align: left;}
+.sg-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    color: black;
+}
+
+  .sg-toggle-wrapper { display: flex; align-items: center; gap: 10px; margin-right: 20px;}
+  .sg-label-text { font-size: 12px; color: #999; font-weight: 600; }
+  .sg-label-text.is-active { color: #000; }
+  
+  .sg-toggle { position: relative; width: 36px; height: 20px; cursor: pointer; margin: 0; }
+  .sg-toggle input { opacity: 0; width: 0; height: 0; }
+  .sg-slider {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc; transition: .4s; border-radius: 34px;
+  }
+  .sg-slider:before {
+    position: absolute; content: ""; height: 14px; width: 14px;
+    left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%;
+  }
+  input:checked + .sg-slider { background-color: #000; }
+  input:checked + .sg-slider:before { transform: translateX(16px); }
+
+  .sg-body { padding: 20px; }
+  .sg-meta { margin-bottom: 20px; font-size: 13px; line-height: 1.5; }
+  .sg-meta strong { text-transform: uppercase; }
+
+  .sg-table { border: 1px solid #eee; }
+  
+  .sg-table-container {
+    width: 100%;
+    border: 1px solid #eee;
+  }
+
+  .sg-row {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-cols), 1fr);
+    width: 100%;
+    border-bottom: 1px solid #eee;
+    align-items: center;
+  }
+
+  .sg-row:last-child { border-bottom: none; }
+
+  .sg-row div, .sg-cell, .sg-size-label {
+    padding: 12px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 13px;
+    min-width: 0;
+    word-break: break-word;
+  }
+
+  .sg-row--head {
+    background: #f8f8f8;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px !important;
+    letter-spacing: 0.5px;
+  }
+
+  .sg-size-label { font-weight: 700; background: #fafafa; }
+
+  .sg-big-image-container {
+    width: 100%;
+    text-align: center;
+  }
+
+  .sg-main-guide-img {
+    max-width: 100%;
+    height: auto;
+    display: inline-block;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 600px) {
+    .sg-row div { font-size: 10px; padding: 10px 4px; }
+    .sg-row--head div { font-size: 9px !important; }
+  }
+  
+  .sg-row.sg-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .sg-row:not(.sg-row--head):nth-child(even) { background-color: #fafafa; }
+
+  @media(max-width: 600px) {
+    .sg-toggle-wrapper { position: absolute; top: 50px; left: 0; width: 100%; justify-content: center; background: #fff; padding: 10px; border-bottom: 1px solid #eee; z-index: 2;}
+    .sg-body { padding-top: 50px; }
+  }
+  
+  .sg--lock { overflow: hidden; }
+</style>
+
+{% endif %}

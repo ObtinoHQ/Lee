@@ -1,0 +1,166 @@
+<div class="lx-pro-faq-wrapper {% if block.settings.apply %}border-top{% endif %}"
+    style="
+        --faq-question-color: {{ block.settings.question_color }};
+        --faq-question-size: {{ block.settings.question_size }}px;
+        --faq-answer-color: {{ block.settings.answer_color }};
+        --faq-answer-size: {{ block.settings.answer_size }}px;
+        --chart-track-color: #f0f0f0;
+        --chart-bar-color: {{ block.settings.chart_color | default: '#000000' }};
+    "
+>
+    {% if block.settings.title != '' %}
+        <div class="lx-pro-faq-question">
+            {{ block.settings.title }}
+            <span class="lx-pro-faq-icon">
+                <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11.91 -3.858e-05L12.97 1.06096L7.193 6.83996C7.10043 6.93312 6.99036 7.00704 6.86911 7.05749C6.74786 7.10794 6.61783 7.13391 6.4865 7.13391C6.35517 7.13391 6.22514 7.10794 6.10389 7.05749C5.98264 7.00704 5.87257 6.93312 5.78 6.83996L2.65457e-07 1.06096L1.06 0.000960873L6.485 5.42496L11.91 -3.858e-05Z" fill="black"/>
+                </svg>
+            </span>
+        </div>
+    {% endif %}
+
+    <div class="lx-pro-faq-answer">
+        {% if block.settings.show_stats %}
+            <div class="lx-stats-grid">
+                <div class="lx-stat-item">
+                    <span class="lx-stat-label">{{ block.settings.weight_label }}</span>
+                    <div class="lx-stat-value-row">{{ block.settings.weight_value }}</div>
+                    <span class="lx-stat-subtext">{{ block.settings.weight_subtext }}</span>
+                </div>
+                <div class="lx-stat-item">
+                    <span class="lx-stat-label">{{ block.settings.drop_label }}</span>
+                    <div class="lx-stat-value-row">{{ block.settings.drop_value }}</div>
+                    <span class="lx-stat-subtext">{{ block.settings.drop_subtext }}</span>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if block.settings.text != '' %}
+            <div class="lx-faq-text-content" style="margin-bottom: 25px;">
+                {{ block.settings.text }}
+            </div>
+        {% endif %}
+
+        {% if block.settings.show_charts %}
+            <div class="lx-spec-container">
+                {% comment %} --- CHART 1 (TOP) --- {% endcomment %}
+                <div class="lx-spec-group">
+                    <span class="lx-spec-title">{{ block.settings.chart_1_label }}</span>
+                    <div class="lx-spec-track-wrapper">
+                        <div class="lx-spec-track">
+                            <div class="lx-track-segment"></div>
+                            <div class="lx-track-segment"></div>
+                            <div class="lx-track-segment"></div>
+                        </div>
+                        {%- assign pos1 = block.settings.chart_1_position | downcase -%}
+                        {%- assign left_offset1 = '0%' -%}
+                        {%- if pos1 contains 'middle' -%}{%- assign left_offset1 = '33.33%' -%}{%- elsif pos1 contains 'right' -%}{%- assign left_offset1 = '66.66%' -%}{%- endif -%}
+                        <div class="lx-spec-indicator" style="left: {{ left_offset1 }};"></div>
+                    </div>
+                    <div class="lx-spec-labels">
+                        <span style="text-align: left;">{{ block.settings.chart_1_left }}</span>
+                        <span style="text-align: center;">{{ block.settings.chart_1_mid }}</span>
+                        <span style="text-align: right;">{{ block.settings.chart_1_right }}</span>
+                    </div>
+                </div>
+
+                {% comment %} --- CHART 2 (BOTTOM) --- {% endcomment %}
+                <div class="lx-spec-group" style="margin-top: 25px;">
+                    <span class="lx-spec-title">{{ block.settings.chart_2_label }}</span>
+                    <div class="lx-spec-track-wrapper">
+                        <div class="lx-spec-track">
+                            <div class="lx-track-segment"></div>
+                            <div class="lx-track-segment"></div>
+                            <div class="lx-track-segment"></div>
+                        </div>
+                        {%- assign pos2 = block.settings.chart_2_position | downcase -%}
+                        {%- assign left_offset2 = '0%' -%}
+                        {%- if pos2 contains 'middle' -%}{%- assign left_offset2 = '33.33%' -%}{%- elsif pos2 contains 'right' -%}{%- assign left_offset2 = '66.66%' -%}{%- endif -%}
+                        <div class="lx-spec-indicator" style="left: {{ left_offset2 }};"></div>
+                    </div>
+                    <div class="lx-spec-labels">
+                        <span style="text-align: left;">{{ block.settings.chart_2_left }}</span>
+                        <span style="text-align: center;">{{ block.settings.chart_2_mid }}</span>
+                        <span style="text-align: right;">{{ block.settings.chart_2_right }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+  /* --- STATS GRID STYLES (New) --- */
+  .lx-stats-grid {
+    display: flex;
+    gap: 40px; /* Space between Weight and Drop */
+    margin-bottom: 30px;
+    margin-top: 12px;
+    padding-inline: 20px;
+  }
+  .lx-stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .lx-stat-label {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 4px;
+  }
+.lx-stat-value-row {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #000;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    white-space: nowrap;
+}
+  /* Target small text inside the value if user uses HTML, e.g. <small>oz</small> */
+  .lx-stat-value-row small {
+    font-size: 14px;
+    font-weight: 400;
+    color: #555;
+  }
+  .lx-stat-subtext {
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+  }
+
+  /* --- EXISTING STYLES --- */
+  .lx-spec-container { width: 100%; margin-top: 15px; font-family: inherit;    padding-inline: 20px;
+ }
+  .lx-spec-group { width: 100%; display: block; }
+  .lx-spec-title { font-weight: 600; font-size: 15px; margin-bottom: 12px; display: block; color: #000; }
+  .lx-spec-track-wrapper { position: relative; width: 100%; height: 6px; margin-bottom: 8px; }
+  .lx-spec-track { display: flex; width: 100%; height: 100%; gap: 2px; }
+.lx-track-segment {
+    flex: 1;
+    background-color: var(--chart-track-color);
+    border-radius: 0;
+    display: block !important;
+}
+  .lx-track-segment:first-child { border-top-left-radius: 3px; border-bottom-left-radius: 3px; }
+  .lx-track-segment:last-child { border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
+.lx-spec-indicator {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 33.33%;
+    background-color: var(--chart-bar-color);
+    border-radius: 3px;
+    transition: left 0.3s ease;
+    z-index: 2;
+    display: block !important;
+}
+  .lx-spec-labels { display: grid; grid-template-columns: 1fr 1fr 1fr; margin-top: 8px; font-size: 12px; color: #757575; }
+  @media screen and (max-width:800px){
+      .lx-stat-value-row {
+    font-size: 18px; 
+      }
+}
+</style>
+

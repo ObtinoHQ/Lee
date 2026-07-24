@@ -1,0 +1,423 @@
+{% schema %}
+{
+  "name": "Returns",
+  "tag": "section",
+  "class": "section-returns-portal",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content Settings"
+    },
+    {
+      "type": "text",
+      "id": "main_heading",
+      "label": "Main Heading",
+      "default": "RETURNS & EXCHANGES"
+    },
+    {
+      "type": "textarea",
+      "id": "intro_text",
+      "label": "Intro Text",
+      "default": "We want you to be completely satisfied with your purchase. Please select your region below to begin your return."
+    },
+    {
+      "type": "header",
+      "content": "EU & UK Zone"
+    },
+    {
+      "type": "text",
+      "id": "eu_title",
+      "label": "EU/UK Title",
+      "default": "EU & UK RETURNS"
+    },
+    {
+      "type": "richtext",
+      "id": "eu_content",
+      "label": "EU Instructions",
+      "default": "<p>Our return portal is available exclusively for customers within the European Union and UK.</p>"
+    },
+    {
+      "type": "text",
+      "id": "btn_eu_label",
+      "label": "EU Button Label",
+      "default": "Request EU Return"
+    },
+    {
+      "type": "url",
+      "id": "btn_eu_link",
+      "label": "EU Return Link"
+    },
+    {
+      "type": "header",
+      "content": "Non-EU Zone"
+    },
+    {
+      "type": "text",
+      "id": "noneu_title",
+      "label": "Non-EU Title",
+      "default": "INTERNATIONAL RETURNS"
+    },
+    {
+      "type": "richtext",
+      "id": "noneu_content",
+      "label": "Non-EU Instructions",
+      "default": "<p>For customers outside the EU/UK. Please contact us to initiate a return request.</p>"
+    },
+    {
+      "type": "text",
+      "id": "btn_noneu_label",
+      "label": "Non-EU Button Label",
+      "default": "Request Return"
+    },
+    {
+      "type": "url",
+      "id": "btn_noneu_link",
+      "label": "Non-EU Return Link"
+    },
+    {
+      "type": "header",
+      "content": "Support Bar"
+    },
+    {
+      "type": "text",
+      "id": "contact_btn_text",
+      "label": "Contact Button Text",
+      "default": "Contact Support"
+    },
+    {
+      "type": "url",
+      "id": "contact_url",
+      "label": "Contact URL"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_btn_text",
+      "label": "WhatsApp Button Text",
+      "default": "WhatsApp Us"
+    },
+    {
+      "type": "url",
+      "id": "whatsapp_url",
+      "label": "WhatsApp URL"
+    },
+    {
+      "type": "richtext",
+      "id": "footer_disclaimer",
+      "label": "Footer Disclaimer",
+      "default": "<p>Detailed information is available in our <a href=\"/pages/refund-policy\">Refund & Return Policy</a>.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Returns"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="rp-container">
+  <div class="rp-wrapper">
+    
+    <div class="rp-header">
+      <h1 class="rp-main-title">{{ section.settings.main_heading }}</h1>
+      <p class="rp-intro">{{ section.settings.intro_text }}</p>
+    </div>
+
+    <div class="rp-grid">
+      
+      <div class="rp-card rp-card-eu">
+        <div class="rp-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#CE2C0E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path><path d="M2 12h20"></path></svg>
+        </div>
+        <h2 class="rp-card-title">{{ section.settings.eu_title }}</h2>
+        <div class="rp-card-content">
+          {{ section.settings.eu_content }}
+          
+          <div class="rp-alert-box">
+            <strong>🇬🇧 For UK Customers:</strong>
+            <p>Please select the <span>&lt;Return in Store&gt;</span> option at the end and ship items back to our UK warehouse at your own cost. Send tracking code via email/WhatsApp.</p>
+          </div>
+        </div>
+        
+        <a href="{{ section.settings.btn_eu_link }}" class="rp-btn rp-btn-primary">
+          {{ section.settings.btn_eu_label }}
+        </a>
+      </div>
+
+      <div class="rp-card rp-card-intl">
+        <div class="rp-card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#CE2C0E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+        </div>
+        <h2 class="rp-card-title">{{ section.settings.noneu_title }}</h2>
+        <div class="rp-card-content">
+          <div class="rp-notice">
+            <strong>Important Notice:</strong>
+            <p>Requests originating from outside the EU will be processed manually.</p>
+          </div>
+          {{ section.settings.noneu_content }}
+        </div>
+        
+        <a href="{{ section.settings.btn_noneu_link }}" class="rp-btn rp-btn-outline">
+          {{ section.settings.btn_noneu_label }}
+        </a>
+      </div>
+
+    </div>
+
+    <div class="rp-footer">
+      <div class="rp-footer-text">Need help with your return?</div>
+      <div class="rp-footer-actions">
+        {% if section.settings.contact_url != blank %}
+          <a href="{{ section.settings.contact_url }}" class="rp-btn-small">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+            {{ section.settings.contact_btn_text }}
+          </a>
+        {% endif %}
+        {% if section.settings.whatsapp_url != blank %}
+          <a href="{{ section.settings.whatsapp_url }}" class="rp-btn-small rp-btn-whatsapp">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            {{ section.settings.whatsapp_btn_text }}
+          </a>
+        {% endif %}
+      </div>
+     <div class="rp-disclaimer">
+        {{ section.settings.footer_disclaimer }}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* --- VARIABLES --- */
+  :root {
+    --rp-red: #CE2C0E;
+    --rp-black: #fff;
+    --rp-dark-grey: #121212;
+    --rp-card-bg: #1A1A1A;
+    --rp-text: #000;
+    --rp-text-muted: #fff;
+    --rp-radius: 4px; /* Athletic/Sharp feel */
+  }
+
+  /* --- LAYOUT --- */
+  .rp-container {
+    background-color: var(--rp-black);
+    color: var(--rp-text);
+    padding: 80px 20px;
+  }
+
+  .rp-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* --- HEADER --- */
+  .rp-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .rp-main-title {
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--rp-text);
+    margin: 0 0 15px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+        font-family: 'Bebas Neue';
+  }
+
+.rp-intro {
+    color: black;
+    font-size: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+    font-family: 'Instrument Sans';
+    line-height: 130%;
+}
+  /* --- GRID --- */
+.rp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 60px;
+    font-family: 'Instrument Sans';
+}
+.rp-grid *{
+    font-family: 'Instrument Sans';
+}
+  /* --- CARDS --- */
+  .rp-card {
+    background: var(--rp-card-bg);
+    border: 1px solid #333;
+    padding: 40px;
+    border-radius: var(--rp-radius);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .rp-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--rp-red);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .rp-card-icon {
+    margin-bottom: 20px;
+  }
+
+  .rp-card-title {
+    font-size: 2rem;
+    margin: 0 0 20px 0;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  .rp-card-content {
+    color: var(--rp-text-muted);
+    line-height: 1.6;
+    margin-bottom: 30px;
+    flex-grow: 1;
+    width: 100%;
+    font-size: 1.5rem;
+  }
+  
+  .rp-card-content p {
+    margin-bottom: 15px;
+  }
+
+  /* --- ALERTS & NOTICES --- */
+  .rp-alert-box {
+    background: rgba(206, 44, 14, 0.1); /* Low opacity red */
+    border-left: 3px solid var(--rp-red);
+    padding: 15px;
+    margin-top: 20px;
+    font-size: 15px;
+  }
+
+  .rp-alert-box span {
+    color: var(--rp-red);
+  }
+
+  .rp-notice {
+    margin-bottom: 15px;
+    color: #fff;
+  }
+
+  /* --- BUTTONS --- */
+  .rp-btn {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    padding: 15px 20px;
+    text-transform: uppercase;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border-radius: var(--rp-radius);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .rp-btn-primary {
+    background-color: var(--rp-red);
+    color: #fff;
+    border: 1px solid var(--rp-red);
+  }
+
+  .rp-btn-primary:hover {
+    background-color: #B2220B;
+    border-color: #B2220B;
+  }
+
+  .rp-btn-outline {
+    background-color: transparent;
+    color: #fff;
+    border: 1px solid #555;
+  }
+
+  .rp-btn-outline:hover {
+    border-color: #fff;
+    background-color: rgba(255,255,255,0.05);
+  }
+
+  /* --- FOOTER / SUPPORT BAR --- */
+  .rp-footer {
+    border-top: 1px solid #333;
+    padding-top: 40px;
+    text-align: center;
+  }
+
+  .rp-footer-text {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+
+  .rp-footer-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+  }
+
+  .rp-btn-small {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 1px solid #333;
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    background: #111;
+  }
+
+  .rp-btn-small:hover {
+    border-color: var(--rp-red);
+    color: var(--rp-red);
+  }
+  
+  .rp-btn-whatsapp:hover {
+     border-color: #25D366;
+     color: #25D366;
+  }
+
+  .rp-disclaimer {
+    font-size: 1.5rem;
+    color: #000;
+  }
+  
+  .rp-disclaimer a {
+    color: #777;
+    text-decoration: underline;
+  }
+
+  /* --- RESPONSIVE --- */
+  @media (max-width: 768px) {
+    .rp-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .rp-main-title {
+      font-size: 3rem;
+    }
+    
+    .rp-card {
+      padding: 30px 20px;
+    }
+  }
+</style>

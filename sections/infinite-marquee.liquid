@@ -1,0 +1,275 @@
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    background-color: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Container for the scrolling effect */
+  .marquee-wrapper {
+    display: flex;
+    overflow: hidden;
+    user-select: none;
+    gap: {{ section.settings.item_gap }}px;
+  }
+
+  /* The moving tracks */
+  .marquee-content {
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-around;
+    gap: {{ section.settings.item_gap }}px;
+    min-width: 100%;
+    
+    /* Animation definition */
+    animation: scroll {{ section.settings.speed }}s linear infinite;
+    
+    /* Hardware acceleration for smoothness */
+    will-change: transform; 
+  }
+
+  /* Individual Items */
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .marquee-item img {
+    display: block;
+    height: {{ section.settings.icon_size }}px;
+    width: auto;
+    margin-right: 10px;
+    object-fit: contain;
+  }
+
+  .marquee-item span {
+    font-size: {{ section.settings.font_size }}px;
+    font-weight: {{ section.settings.font_weight }};
+    letter-spacing: 0.5px;
+  }
+
+  /* Hover State */
+  {% if section.settings.pause_on_hover %}
+  .marquee-wrapper:hover .marquee-content {
+    animation-play-state: paused;
+  }
+  {% endif %}
+
+  /* Reverse Direction Support */
+  {% if section.settings.direction == 'right' %}
+    .marquee-content {
+      animation-direction: reverse;
+    }
+  {% endif %}
+
+  /* Keyframes */
+  @keyframes scroll {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-100% - {{ section.settings.item_gap }}px));
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    .marquee-item span {
+      font-size: {{ section.settings.font_size | times: 0.9 }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="section-{{ section.id }}-padding" role="region" aria-label="Announcement Bar">
+  <div class="marquee-wrapper">
+    
+    {%- capture marquee_items -%}
+      {%- for block in section.blocks -%}
+        <div class="marquee-item" {{ block.shopify_attributes }}>
+          {%- if block.settings.icon != blank -%}
+            {{ block.settings.icon | image_url: width: 100 | image_tag: loading: 'lazy', alt: block.settings.text }}
+          {%- endif -%}
+          <span>{{ block.settings.text }}</span>
+        </div>
+      {%- endfor -%}
+    {%- endcapture -%}
+
+    {% comment %} 
+      We render the list multiple times to ensure the loop is seamless 
+      regardless of screen width.
+    {% endcomment %}
+    <div class="marquee-content">
+      {{ marquee_items }}
+    </div>
+    <div class="marquee-content" aria-hidden="true">
+      {{ marquee_items }}
+    </div>
+    <div class="marquee-content" aria-hidden="true">
+      {{ marquee_items }}
+    </div>
+    <div class="marquee-content" aria-hidden="true">
+      {{ marquee_items }}
+    </div>
+
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Infinite Marquee",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Look & Feel"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 12,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "font_weight",
+      "min": 400,
+      "max": 900,
+      "step": 100,
+      "label": "Font Weight",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 10,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Icon Height",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Animation"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 5,
+      "max": 60,
+      "step": 1,
+      "unit": "s",
+      "label": "Animation Duration",
+      "default": 20,
+      "info": "Lower is faster"
+    },
+    {
+      "type": "select",
+      "id": "direction",
+      "label": "Direction",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "item_gap",
+      "min": 20,
+      "max": 150,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap between items",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Top Padding",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Bottom Padding",
+      "default": 12
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon (Optional)"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Free Shipping"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Infinite Marquee",
+      "blocks": [
+        {
+          "type": "text",
+          "settings": { "text": "Designed for Athletes" }
+        },
+        {
+          "type": "text",
+          "settings": { "text": "Quality Guaranteed" }
+        },
+        {
+          "type": "text",
+          "settings": { "text": "European Local Shipping" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

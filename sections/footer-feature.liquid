@@ -1,0 +1,264 @@
+<style>
+.features-banner {
+background-color: {{ section.settings.background_color }};/
+}
+
+.features-banner__grid {
+display: grid;
+grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
+gap: 10px;
+}
+.features-banner__item {
+text-align: center;
+background: #1C1C1C;
+padding: 15px 20px;
+border-radius: 5px;
+text-align: {{ section.settings.text_align }};
+}
+.features-banner__icon {
+margin-bottom: 20px;
+display: flex;
+{% if section.settings.text_align == 'center' %}
+justify-content: center;
+{% elsif section.settings.text_align == 'right' %}
+justify-content: flex-end;
+{% else %}
+justify-content: flex-start;
+{% endif %}
+}
+
+.features-banner__icon img {
+width: {{ section.settings.icon_size }}px;
+height: {{ section.settings.icon_size }}px;
+object-fit: contain;
+}
+
+.features-banner__title {
+color: {{ section.settings.heading_color }};
+font-family: Instrument Sans;
+font-weight: 500;
+font-style: Medium;
+font-size: 14px;
+leading-trim: CAP_HEIGHT;
+line-height: 140%;
+letter-spacing: 0%;
+text-align: center;
+margin-bottom: 5px;
+}
+
+.features-banner__description {
+color: {{ section.settings.description_color }};
+font-family: Instrument Sans;
+font-weight: 400;
+font-style: Regular;
+font-size: 14px;
+leading-trim: CAP_HEIGHT;
+line-height: 140%;
+letter-spacing: 0%;
+text-align: center;
+max-width: 250px;
+margin: 0 auto;
+}
+.features-banner__description p{
+margin: 0;}
+@media (max-width: 768px) {
+.features-banner {
+padding: 40px 0; /* Standard Mobile Padding */
+}
+.features-banner__item {
+padding: 10px;
+}
+.features-banner__description {
+font-size: 12px;
+}
+.features-banner__grid {
+grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr);
+}
+}
+</style>
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+  }
+  .section-{{ section.id }}-title{
+    text-align: {{section.settings.title-align}};
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+<section class="features-banner section-{{ section.id }}-padding">
+  <div class="features-banner__container container-xs">
+    <div class="features-banner__grid">
+      {% for block in section.blocks %}
+        <div class="features-banner__item" {{ block.shopify_attributes }}>
+          {% if block.settings.icon %}
+            <div class="features-banner__icon">
+              {{ block.settings.icon | image_url: width: 200 | image_tag: loading: 'lazy', alt: block.settings.title }}
+            </div>
+          {% endif %}
+
+          {% if block.settings.title != blank %}
+            <h3 class="features-banner__title">
+              {{ block.settings.title }}
+            </h3>
+          {% endif %}
+
+          {% if block.settings.description != blank %}
+            <div class="features-banner__description">
+              {{ block.settings.description }}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Features Icons",
+  "settings": [
+         {
+      "type": "header",
+      "content": "Paddding Heading"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label":  "Paddding Top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label":  "Paddding Bottom",
+      "default": 0
+    },
+        {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label":  "Paddding Top Mobile",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "label":  "Paddding Bottom Mobile",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "label": "Columns (Desktop)",
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Columns (Mobile)",
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Text Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 30,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Icon Size",
+      "default": 80
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description Color",
+      "default": "#333333"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature Item",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon/Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Feature Title"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description",
+          "default": "<p>Add your feature description here</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Features Icons",
+    }
+  ]
+}
+{% endschema %}

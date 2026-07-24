@@ -1,0 +1,100 @@
+<div id="cc-dif-{{ block.id }}" class="cc-dif-wrapper">
+  <div class="cc-dif-container">
+    {% comment %} {%- if block.settings.heading != blank -%}
+      <span class="cc-dif-header">{{ block.settings.heading }}</span>
+    {%- endif -%}
+     {% endcomment %}
+    <div class="cc-dif-grid">
+      {%- for i in (1..6) -%}
+        {%- assign img_id = 'item_image_' | append: i -%}
+        {%- assign title_id = 'item_title_' | append: i -%}
+        {%- assign link_id = 'item_link_' | append: i -%}
+        
+        {%- if block.settings[title_id] != blank -%}
+          <a href="{{ block.settings[link_id] }}" class="cc-dif-item">
+            <div class="cc-dif-image-box">
+              {%- if block.settings[img_id] != blank -%}
+                <img src="{{ block.settings[img_id] | image_url: width: 600 }}" alt="{{ block.settings[title_id] | escape }}" loading="lazy">
+              {%- else -%}
+                {{ 'image' | placeholder_svg_tag: 'cc-dif-placeholder' }}
+              {%- endif -%}
+            </div>
+            <span class="cc-dif-title">{{ block.settings[title_id] }}</span>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<style>
+.cc-dif-header {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #888;
+  margin: 0 0 20px 0;
+  display: block;
+}
+
+/* 1. Desktop Grid - Controlled by Schema */
+#cc-dif-{{ block.id }} .cc-dif-grid {
+  display: grid;
+  grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
+  gap: 24px 16px;
+}
+
+.cc-dif-item {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.cc-dif-item:hover {
+  opacity: 0.8;
+}
+
+.cc-dif-image-box {
+  width: 100%;
+  aspect-ratio: 1.6 / 1;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+  background-color: #f7f7f7;
+}
+
+.cc-dif-image-box img, 
+.cc-dif-placeholder {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cc-dif-title {
+  font-family: Instrument Sans, sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 122%;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* 2. Mobile Grid - Controlled by Schema */
+@media screen and (max-width: 749px) {
+ #cc-dif-{{ block.id }} .cc-dif-grid {
+    /* REMOVED the hardcoded 'repeat(2, 1fr)' that was breaking your logic */
+    grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+  }
+  
+  .cc-dif-title {
+    color: black;
+  }
+  
+  .cc-dif-wrapper {
+    padding-inline: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+</style>

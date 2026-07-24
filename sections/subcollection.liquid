@@ -1,0 +1,226 @@
+{%- liquid
+  if section.settings.enable_subcoll and section.settings.subcoll_menu != blank
+    assign current_link_parent = false
+    for link in linklists[section.settings.subcoll_menu].links
+      if link.links != empty
+        if link.type == 'collection_link' and link.object.handle == collection.handle
+          assign current_link_parent = link
+          break
+        elsif link.type == 'catalog_link' and collection.handle == 'all'
+          assign current_link_parent = link
+          break
+        endif
+      endif
+      if link.links != blank and current_link_parent == false
+        for child_link in link.links
+          if child_link.type == 'collection_link' and child_link.object.handle == collection.handle
+            if child_link.links == empty
+              assign current_link_parent = link
+            else
+              assign current_link_parent = child_link
+            endif
+            break
+          endif
+          if child_link.type == 'catalog_link' and collection.handle == 'all'
+            if child_link.links == empty
+              assign current_link_parent = link
+            else
+              assign current_link_parent = child_link
+            endif
+            break
+          endif
+          if child_link.links != blank and current_link_parent == false
+            for child_child_link in child_link.links
+              if child_child_link.type == 'collection_link' and child_child_link.object.handle == collection.handle
+                assign current_link_parent = child_link
+                break
+              elsif child_child_link.type == 'catalog_link' and collection.handle == 'all'
+                assign current_link_parent = child_link
+                break
+              endif
+            endfor
+          endif
+        endfor
+      endif
+    endfor
+  endif
+-%}
+
+{% assign subcollections = current_link_parent.links
+  | where: 'type', 'collection_link'
+  | reject: 'object.handle', collection.handle
+%}
+
+{% if subcollections.size > 0 %}
+  <div class="cm-subcoll-carousel-wrapper container">
+    <div class="cm-subcoll-carousel">
+      {% for link in subcollections %}
+        <a
+          href="{{ link.url }}"
+          class="cm-subcoll-item{% if link.object.handle == collection.handle %} cm-active{% endif %}"
+        >
+          <div class="cm-subcoll-image-wrapper">
+            {% if link.object.image %}
+              <img src="{{ link.object.image | img_url: '200x' }}" alt="{{ link.title | escape }}" loading="lazy">
+            {% elsif link.object.products_count > 0 %}
+              {% assign first_product = link.object.products.first %}
+              {% if first_product.featured_image %}
+                <img
+                  src="{{ first_product.featured_image | img_url: '200x' }}"
+                  alt="{{ link.title | escape }}"
+                  loading="lazy"
+                >
+              {% endif %}
+            {% else %}
+               <img src="{{ 'no-image.jpg' | asset_url }}" alt="{{ link.title | escape }}" loading="lazy" style="opacity:0.5;">
+            {% endif %}
+          </div>
+          <span class="cm-subcoll-title">{{ link.title }}</span>
+        </a>
+      {% endfor %}
+    </div>
+    <div class="cm-subcoll-progress-bar">
+      <div class="cm-subcoll-progress"></div>
+    </div>
+  </div>
+
+  <style>
+    .cm-subcoll-carousel-wrapper {
+        margin-bottom: 30px;
+    }
+    .cm-subcoll-carousel {
+      display: flex;
+      overflow-x: scroll;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 12px;
+      padding: 1rem 1rem 0.5rem;
+      scrollbar-width: none; /* Firefox */
+      justify-content: center;
+    }
+
+    .cm-subcoll-carousel::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Edge */
+    }
+
+    .cm-subcoll-item {
+      flex: 0 0 120px; /* Fixed width for better control */
+      scroll-snap-align: start;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+    }
+    
+    /* Responsive width */
+    @media(min-width: 768px) {
+        .cm-subcoll-item {
+            flex: 0 0 150px; 
+        }
+    }
+
+    .cm-subcoll-image-wrapper {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%; /* Makes circle like the example image? Or keep 8px for square */
+      border-radius: 8px; 
+      overflow: hidden;
+      background: #f4f4f4;
+      margin-bottom: 8px;
+    }
+
+    .cm-subcoll-image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cm-subcoll-title {
+      font-size: 13px;
+      text-align: center;
+      font-weight: 600;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .cm-subcoll-item.cm-active .cm-subcoll-title {
+      text-decoration: underline;
+    }
+
+    .cm-subcoll-progress-bar {
+      height: 2px;
+      background: #eee;
+      position: relative;
+      margin-top: 10px;
+      width: 100%;
+      max-width: 200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cm-subcoll-progress {
+      height: 100%;
+      background: #000;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const carousel = document.querySelector('.cm-subcoll-carousel');
+      const progress = document.querySelector('.cm-subcoll-progress');
+
+      function updateProgress() {
+        if(!carousel) return;
+        const scrollLeft = carousel.scrollLeft;
+        const maxScroll = carousel.scrollWidth - carousel.clientWidth;
+        const scrollPercent = maxScroll > 0 ? (scrollLeft / maxScroll) * 100 : 0;
+        if(progress) progress.style.width = `${scrollPercent}%`;
+      }
+
+      if (carousel) {
+        carousel.addEventListener('scroll', updateProgress);
+        // Trigger once on load
+        updateProgress();
+      }
+    });
+  </script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Subcollection Carousel",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Subcollections"
+    },
+    {
+      "type": "paragraph",
+      "content": "The current collection must be in the menu for this to work."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_subcoll",
+      "label": "Enable subcollections",
+      "default": true
+    },
+    {
+      "type": "link_list",
+      "id": "subcoll_menu",
+      "label": "Subcollections menu",
+      "info": "Select your main menu here",
+      "default": "main-menu"
+    }
+  ],
+  "presets": [
+    {
+        "name": "Subcollection Carousel"
+    }
+  ]
+}
+{% endschema %}

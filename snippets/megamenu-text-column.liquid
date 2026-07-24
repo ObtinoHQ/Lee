@@ -1,0 +1,62 @@
+<div class="mm-brand-promise__wrapper">
+  <div class="mm-brand-promise__container">
+    <div class="mm-brand-promise__content">
+      <h3 class="mm-brand-promise__title">{{ block.settings.mm_title }}</h3>
+      <div class="mm-brand-promise__text">{{ block.settings.mm_desc }}</div>
+      
+      {% if block.settings.mm_link_text != blank %}
+      <a href="{{ block.settings.mm_link_url }}" class="mm-brand-promise__link">
+        {{ block.settings.mm_link_text }}
+        <span class="mm-brand-promise__arrow">→</span>
+      </a>
+    {% endif %}
+    </div>
+
+  </div>
+</div>
+
+<style>
+.mm-brand-promise__title {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: #1a1a1a;
+  line-height: 1.2;
+}
+
+.mm-brand-promise__text p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4a4a4a;
+  margin: 0 0 12px 0;
+}
+
+.mm-brand-promise__link {
+  display: inline-flex;
+  align-items: center;
+  font-size: 14px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.mm-brand-promise__arrow {
+  margin-left: 5px;
+  transition: transform 0.2s ease;
+}
+
+.mm-brand-promise__link:hover .mm-brand-promise__arrow {
+  transform: translateX(4px);
+}
+@media screen and (max-width: 749px) {
+  .mm-brand-promise__content{
+    padding-inline: 2rem;
+    }
+    .mm-brand-promise__title{
+        font-size: 20px;
+    }
+    .mm-brand-promise__text p{
+        font-size: 12px;
+    }
+}
+</style>

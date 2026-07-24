@@ -1,0 +1,538 @@
+{%- style -%}
+  /* --- SCOPED VARIABLES & RESET --- */
+  #custom-slideshow-{{ section.id }} {
+    position: relative;
+    width: 100%;
+    max-width: 100vw;
+    overflow: hidden;
+    box-sizing: border-box;
+    display: block;
+    
+    /* Desktop Height */
+    {% if section.settings.adapt_height_desktop %}
+      height: auto;
+      aspect-ratio: 16 / 9;
+    {% else %}
+      height: {{ section.settings.min_height_desktop }}px;
+    {% endif %}
+  }
+
+  /* Mobile Height */
+  @media (max-width: 767px) {
+    #custom-slideshow-{{ section.id }} {
+      {% if section.settings.adapt_height_mobile %}
+        height: auto;
+        aspect-ratio: 3 / 4;
+      {% else %}
+        height: {{ section.settings.min_height_mobile }}px;
+      {% endif %}
+    }
+  }
+
+  /* --- FADE IN LOAD --- */
+  .cs-swiper-container {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.4s ease-in;
+  }
+  .cs-swiper-container.swiper-initialized,
+  .no-js .cs-swiper-container {
+    opacity: 1;
+  }
+.cs-heading p,
+.cs-subheading p{
+    margin: 0;
+}
+  .cs-swiper-wrapper { width: 100%; height: 100%; display: flex; }
+  .cs-swiper-slide { width: 100%; height: 100%; flex-shrink: 0; position: relative; overflow: hidden; }
+
+  /* --- MEDIA --- */
+  .cs-media-wrapper { width: 100%; height: 100%; position: relative; }
+  .cs-image, .cs-video { width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; top: 0; left: 0; }
+  
+  .cs-desktop-img { display: block; }
+  .cs-mobile-img { display: none; }
+  @media (max-width: 767px) {
+    .cs-desktop-img { display: none; }
+    .cs-mobile-img { display: block; }
+  }
+
+  /* --- CONTENT OVERLAY --- */
+  .cs-content-overlay {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    padding: 40px;
+    pointer-events: none;
+    top: 0; left: 0;
+  }
+
+  .cs-content-positioner {
+    position: absolute;
+    /* Default centering */
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 100%;
+    pointer-events: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    max-width: 500px;
+  }
+
+  .cs-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px;
+    line-height: 0.9;
+    margin: 0 0 15px 0;
+    text-transform: uppercase;
+  }
+
+  .cs-subheading {
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 18px;
+    line-height: 1.4;
+    margin: 0 0 25px 0;
+  }
+
+  .cs-buttons-wrapper {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+
+  /* --- YOUR CUSTOM BUTTON STYLE (.theme-btn) --- */
+  .cs-theme-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 3rem;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border: 1px solid var(--btn-bg);
+    border-radius: 5rem;
+    text-decoration: none;
+    font-family: 'Instrument Sans', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 100%;
+    text-align: center;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 1;
+    transition: color 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .cs-theme-btn::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Hover background color (uses text color for contrast) */
+    background: var(--btn-text);
+    
+    transform: translateX(-100%);
+    transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: -1;
+  }
+
+  .cs-theme-btn:hover {
+    color: var(--btn-bg); /* Text becomes background color */
+    border-color: var(--btn-bg);
+  }
+
+  .cs-theme-btn:hover::before {
+    transform: translateX(0);
+  }
+
+  /* --- CONTROLS --- */
+  .cs-nav-btn {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    width: 50px; height: 50px;
+    background: rgba(255,255,255,0.2);
+    border: 1px solid rgba(255,255,255,0.5);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 20;
+    transition: background 0.3s ease; color: #fff;
+  }
+  .cs-nav-btn:hover { background: rgba(255,255,255,0.4); }
+  .cs-prev-btn { left: 20px; }
+  .cs-next-btn { right: 20px; }
+  .cs-nav-icon { width: 20px; height: 20px; fill: currentColor; }
+
+  .cs-pagination-wrapper {
+    position: absolute; bottom: 20px; left: 0; width: 100%;
+    display: flex; justify-content: center; gap: 10px; z-index: 20;
+  }
+  .cs-dot {
+    width: 10px; height: 10px; background: rgba(255,255,255,0.4);
+    border-radius: 50%; cursor: pointer; transition: all 0.3s;
+  }
+  .swiper-pagination-bullet-active.cs-dot {
+    background: #D32F2F; transform: scale(1.2);
+  }
+
+  /* --- RESPONSIVE --- */
+  @media (max-width: 800px) {
+  .cs-content-positioner { max-width: 350px;}
+    .cs-heading { font-size: 48px; }
+    .cs-subheading { font-size: 16px; }
+    .cs-content-overlay { padding: 15px; }
+    .cs-nav-btn { display: none; }
+    .cs-theme-btn { padding: 1.2rem 2rem; }
+  }
+{%- endstyle -%}
+
+
+<div id="custom-slideshow-{{ section.id }}">
+  <div class="swiper cs-swiper-container cs-swiper-{{ section.id }}">
+    <div class="swiper-wrapper cs-swiper-wrapper">
+      
+      {% for block in section.blocks %}
+        <div class="swiper-slide cs-swiper-slide" {{ block.shopify_attributes }}>
+          
+          <div class="cs-media-wrapper">
+            {%- if block.settings.media_type == 'video' and block.settings.video != blank -%}
+              {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true, class: 'cs-video', loading: 'eager' }}
+            {%- else -%}
+              {% if block.settings.image != blank %}
+                <img src="{{ block.settings.image | image_url: width: 2400 }}" class="cs-image cs-desktop-img" loading="eager" alt="{{ block.settings.image.alt | escape }}">
+              {% endif %}
+              {% liquid
+                assign mobile_img = block.settings.image
+                if block.settings.mobile_image != blank
+                  assign mobile_img = block.settings.mobile_image
+                endif
+              %}
+              {% if mobile_img != blank %}
+                <img src="{{ mobile_img | image_url: width: 1000 }}" class="cs-image cs-mobile-img" loading="eager" alt="{{ mobile_img.alt | escape }}">
+              {% endif %}
+            {%- endif -%}
+          </div>
+
+          <style>
+            #pos-{{ block.id }} {
+              top: {{ block.settings.text_position_top }}%;
+              left: {{ block.settings.text_position_left }}%;
+              transform: translate(-{{ block.settings.text_position_left }}%, -{{ block.settings.text_position_top }}%);
+              text-align: {{ block.settings.text_alignment }};
+              align-items: 
+                {% if block.settings.text_alignment == 'center' %}center
+                {% elsif block.settings.text_alignment == 'right' %}flex-end
+                {% else %}flex-start{% endif %};
+              display: flex;
+              flex-direction: column;
+            }
+            #pos-{{ block.id }} .cs-heading, 
+            #pos-{{ block.id }} .cs-subheading {
+              color: {{ block.settings.text_color }};
+            }
+          </style>
+
+          <div class="cs-content-overlay">
+            <div id="pos-{{ block.id }}" class="cs-content-positioner">
+              
+              {% if block.settings.heading != blank %}
+                <h2 class="cs-heading">{{ block.settings.heading }}</h2>
+              {% endif %}
+              
+              {% if block.settings.subheading != blank %}
+                <div class="cs-subheading">{{ block.settings.subheading }}</div>
+              {% endif %}
+              
+              <div class="cs-buttons-wrapper" style="justify-content: {{ block.settings.text_alignment }}">
+                {% if block.settings.button_text != blank %}
+                  <a href="{{ block.settings.button_link }}" 
+                     class="cs-theme-btn" 
+                     style="--btn-bg: {{ block.settings.button_bg }}; --btn-text: {{ block.settings.button_text_color }};">
+                    {{ block.settings.button_text }}
+                  </a>
+                {% endif %}
+                
+                {% if block.settings.button_text2 != blank %}
+                  <a href="{{ block.settings.button_link2 }}" 
+                     class="cs-theme-btn" 
+                     style="--btn-bg: {{ block.settings.button_bg }}; --btn-text: {{ block.settings.button_text_color }};">
+                    {{ block.settings.button_text2 }}
+                  </a>
+                {% endif %}
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if section.settings.show_navigation %}
+      <div class="cs-nav-btn cs-prev-btn cs-prev-{{ section.id }}"><svg class="cs-nav-icon" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path></svg></div>
+      <div class="cs-nav-btn cs-next-btn cs-next-{{ section.id }}"><svg class="cs-nav-icon" viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg></div>
+    {% endif %}
+    {% if section.settings.show_pagination %}
+      <div class="cs-pagination-wrapper cs-pagination-{{ section.id }}"></div>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+  (function() {
+    const sectionId = '{{ section.id }}';
+    const containerSelector = '.cs-swiper-' + sectionId;
+    let swiperInstance = null;
+
+    function initSwiper() {
+      if (typeof Swiper === 'undefined') {
+        setTimeout(initSwiper, 300); return;
+      }
+      if (swiperInstance) swiperInstance.destroy(true, true);
+
+      swiperInstance = new Swiper(containerSelector, {
+        loop: true,
+        effect: '{{ section.settings.transition_effect }}',
+        speed: 800,
+        autoplay: { delay: {{ section.settings.autoplay_speed }}000, disableOnInteraction: false },
+        navigation: { nextEl: '.cs-next-' + sectionId, prevEl: '.cs-prev-' + sectionId },
+        pagination: { el: '.cs-pagination-' + sectionId, clickable: true, bulletClass: 'cs-dot', bulletActiveClass: 'swiper-pagination-bullet-active' },
+        on: { init: function() { document.querySelector(containerSelector).classList.add('swiper-initialized'); } }
+      });
+    }
+    document.addEventListener('DOMContentLoaded', initSwiper);
+    document.addEventListener('shopify:section:load', function(e) { if(e.detail.sectionId === sectionId) initSwiper(); });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Custom Swiper Slideshow",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Carousel Config"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Autoplay Speed",
+      "default": 5
+    },
+    {
+      "type": "select",
+      "id": "transition_effect",
+      "label": "Transition Effect",
+      "options": [
+        { "value": "slide", "label": "Slide" },
+        { "value": "fade", "label": "Fade" }
+      ],
+      "default": "slide"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "label": "Show Pagination Dots",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation",
+      "label": "Show Navigation Arrows",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Height Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "adapt_height_desktop",
+      "label": "Adapt to Image Height (Desktop)",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "min_height_desktop",
+      "min": 300,
+      "max": 1000,
+      "step": 50,
+      "unit": "px",
+      "label": "Fixed Desktop Height",
+      "default": 600
+    },
+    {
+      "type": "checkbox",
+      "id": "adapt_height_mobile",
+      "label": "Adapt to Image Height (Mobile)",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "min_height_mobile",
+      "min": 200,
+      "max": 800,
+      "step": 50,
+      "unit": "px",
+      "label": "Fixed Mobile Height",
+      "default": 500
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Media"
+        },
+        {
+          "type": "select",
+          "id": "media_type",
+          "label": "Media Type",
+          "options": [
+            { "value": "image", "label": "Image" },
+            { "value": "video", "label": "Video" }
+          ],
+          "default": "image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Desktop Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile Image"
+        },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video (MP4)"
+        },
+        {
+          "type": "header",
+          "content": "Content & Colors"
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text Color",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "richtext",
+          "id": "heading",
+          "label": "Heading",
+          "default": "<p>SLIDE HEADING</p>"
+        },
+        {
+          "type": "richtext",
+          "id": "subheading",
+          "label": "Subheading",
+          "default": "<p>Slide Description</p>"
+        },
+        {
+          "type": "header",
+          "content": "Button 1"
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Label",
+          "default": "Shop Now"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Button 2"
+        },
+        {
+          "type": "text",
+          "id": "button_text2",
+          "label": "Label"
+        },
+        {
+          "type": "url",
+          "id": "button_link2",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Button Styles"
+        },
+        {
+          "type": "color",
+          "id": "button_bg",
+          "label": "Button Background",
+          "default": "#D32F2F"
+        },
+        {
+          "type": "color",
+          "id": "button_text_color",
+          "label": "Button Text",
+          "default": "#FFFFFF"
+        },
+        {
+          "type": "header",
+          "content": "Positioning"
+        },
+        {
+          "type": "range",
+          "id": "text_position_top",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Vertical Position",
+          "default": 50
+        },
+        {
+          "type": "range",
+          "id": "text_position_left",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Horizontal Position",
+          "default": 50
+        },
+        {
+          "type": "select",
+          "id": "text_alignment",
+          "label": "Text Alignment",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "center", "label": "Center" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "center"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Swiper Slideshow",
+      "blocks": [
+        { "type": "slide" },
+        { "type": "slide" }
+      ]
+    }
+  ]
+}
+{% endschema %}

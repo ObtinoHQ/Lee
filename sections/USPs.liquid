@@ -1,0 +1,320 @@
+
+{%- style -%}
+  /* CSS Variables for Dynamic Settings */
+  #shopify-section-{{ section.id }} {
+    --ann-bg: {{ section.settings.bg_color }};
+    --ann-text: {{ section.settings.text_color }};
+    --ann-height: {{ section.settings.height }}px;
+    --ann-speed: {{ section.settings.transition_speed }}s;
+    --icon-size: {{ section.settings.icon_size }}px;
+    overflow: hidden;
+    
+}
+
+.announcement-bar-wrapper {
+    background-color: var(--ann-bg);
+    color: var(--ann-text);
+    height: var(--ann-height);
+    position: relative;
+    overflow: hidden;
+    z-index: 10;
+    display: block;
+}
+
+  /* The Scrolling Track */
+  .announcement-track {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    transition: transform var(--ann-speed) cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform;
+  }
+
+  /* Individual Slides */
+  .announcement-slide {
+    min-width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    font-size: {{ section.settings.font_size }}px;
+    font-weight: {{ section.settings.font_weight }};
+  }
+
+  /* Icon Handling */
+  .announcement-slide img,
+  .announcement-slide svg {
+    display: block;
+    width: var(--icon-size);
+    height: var(--icon-size);
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  /* Layout: Icon Right (Row Reverse) */
+  .layout-right {
+    flex-direction: row-reverse;
+  }
+  
+  /* Layout: Icon Left (Default) */
+  .layout-left {
+    flex-direction: row;
+  }
+
+  /* Link Styling */
+  .announcement-slide a {
+    color: currentColor;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: inherit;
+    width: 100%;
+    justify-content: center;
+    flex-direction: inherit; /* Inherits row or row-reverse */
+  }
+
+  /* Mobile Adjustments */
+  @media screen and (max-width: 768px) {
+    .announcement-slide {
+      font-size: calc({{ section.settings.font_size }}px - 2px);
+    }
+  }
+{%- endstyle -%}
+
+<announcement-slider 
+  class="announcement-bar-wrapper" 
+  data-autoplay="{{ section.settings.autoplay }}" 
+  data-delay="{{ section.settings.autoplay_delay | times: 1000 }}"
+  role="region" 
+  aria-label="Announcements">
+  
+  <div class="announcement-track" id="Track-{{ section.id }}">
+    {%- for block in section.blocks -%}
+      <div class="announcement-slide layout-{{ block.settings.icon_position }}" {{ block.shopify_attributes }}>
+        
+        {%- if block.settings.link != blank -%}
+          <a href="{{ block.settings.link }}">
+        {%- endif -%}
+
+        {%- if block.settings.custom_icon != blank -%}
+          {{ block.settings.custom_icon | image_url: width: 60 | image_tag: loading: 'eager', alt: block.settings.text }}
+        {%- endif -%}
+
+        <span>{{ block.settings.text }}</span>
+
+        {%- if block.settings.link != blank -%}
+          </a>
+        {%- endif -%}
+
+      </div>
+    {%- endfor -%}
+  </div>
+
+</announcement-slider>
+
+<script>
+  if (!customElements.get('announcement-slider')) {
+    class AnnouncementSlider extends HTMLElement {
+      constructor() {
+        super();
+        this.track = this.querySelector('.announcement-track');
+        this.slides = this.querySelectorAll('.announcement-slide');
+        this.length = this.slides.length;
+        this.currentIndex = 0;
+        this.autoplay = this.dataset.autoplay === 'true';
+        this.delay = parseInt(this.dataset.delay);
+        this.interval = null;
+
+        if (this.length > 1) {
+          this.init();
+        }
+      }
+
+      init() {
+        if (this.autoplay) {
+          this.startSlide();
+          // Pause on hover for better UX
+          this.addEventListener('mouseenter', () => this.stopSlide());
+          this.addEventListener('mouseleave', () => this.startSlide());
+        }
+      }
+
+      startSlide() {
+        this.stopSlide(); // Clear existing to prevent duplicates
+        this.interval = setInterval(() => {
+          this.nextSlide();
+        }, this.delay);
+      }
+
+      stopSlide() {
+        clearInterval(this.interval);
+      }
+
+      nextSlide() {
+        this.currentIndex = (this.currentIndex + 1) % this.length;
+        this.updatePosition();
+      }
+
+      updatePosition() {
+        const translateX = -(this.currentIndex * 100);
+        this.track.style.transform = `translateX(${translateX}%)`;
+      }
+    }
+    customElements.define('announcement-slider', AnnouncementSlider);
+  }
+</script>
+
+{% schema %}
+{
+  "name": "Announcement Slider",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background",
+      "default":"#111111"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default":"#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Typography"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "min": 30,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "label": "Bar Height",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "font_weight",
+      "min": 300,
+      "max": 800,
+      "step": 100,
+      "label": "Font Weight",
+      "default": 500
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Icon Size",
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Autoplay Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Enable Autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_delay",
+      "min": 1,
+      "max": 10,
+      "step": 0.5,
+      "unit": "s",
+      "label": "Change Slide Every",
+      "default": 3.0
+    },
+    {
+      "type": "range",
+      "id": "transition_speed",
+      "min": 0.1,
+      "max": 1.0,
+      "step": 0.1,
+      "unit": "s",
+      "label": "Slide Animation Speed",
+      "default": 0.5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Announcement",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Free EU Shipping Above €99"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_icon",
+          "label": "Icon / Image"
+        },
+        {
+          "type": "select",
+          "id": "icon_position",
+          "label": "Icon Position",
+          "options": [
+            { "value": "left", "label": "Left" },
+            { "value": "right", "label": "Right" }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (Optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Announcement Slider",
+      "blocks": [
+        {
+          "type": "message",
+          "settings": {
+            "text": "Free EU Shipping Above €99",
+            "icon_position": "left"
+          }
+        },
+        {
+          "type": "message",
+          "settings": {
+            "text": "30-Day Money Back Guarantee",
+            "icon_position": "right"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

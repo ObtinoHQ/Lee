@@ -1,0 +1,253 @@
+{% comment %}
+  Renders a product card with CSS Slider and Variant Image Swatches
+  Includes Smart Fallback for hidden variant images.
+{% endcomment %}
+
+{%- liquid
+  if collection
+    assign product_url = product.url | within: collection
+  else
+    assign product_url = product.url
+  endif
+
+  assign product_images = product.media | where: 'media_type', 'image'
+  assign section_id = section.id | default: 'product-grid'
+  
+  assign image_limit = 4
+  assign image_count = card_product.images.size
+  if image_count > image_limit
+    assign image_count = image_limit
+  endif
+-%}
+
+{%- unless skip_styles -%}
+  {{ 'component-rating.css' | asset_url | stylesheet_tag }}
+  {{ 'component-volume-pricing.css' | asset_url | stylesheet_tag }}
+  {{ 'component-price.css' | asset_url | stylesheet_tag }}
+  {{ 'quick-order-list.css' | asset_url | stylesheet_tag }}
+  {{ 'quantity-popover.css' | asset_url | stylesheet_tag }}
+  
+  {% comment %} <style>
+    .card-color-swatches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .card-swatch {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      border: 1px solid #B7B7B7;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    .card-swatch:hover {
+      border-color: #000;
+    }
+    .card-swatch.active-swatch {
+      border-color: #000;
+    }
+
+    /* --- ADDED STYLES FOR QUICK ADD BUTTON --- */
+    .WI_productCard_img_in {
+      position: relative; /* Ensure button floats relative to image */
+    }
+    ma-quickadd.custom-card-btn {
+      position: absolute;
+      bottom: 10px; /* Adjust spacing from bottom */
+      right: 10px;  /* Adjust spacing from right */
+      z-index: 10;
+      display: block;
+    }
+    @media (max-width: 800px){
+        .card-swatch {
+      width: 25px;
+      height: 25px;
+    }
+  }
+  </style> {% endcomment %}
+{%- endunless -%}
+
+{%- if card_product and card_product != empty -%}
+  <div class="card-wrapper product-card-wrapper underline-links-hover" id="wi-card-{{ section.id }}-{{ card_product.id }}">
+    <card-product class="card card--{{ settings.card_style }} {% if card_product.featured_media %} card--media{% else %} card--text{% endif %}">
+      
+      <div class="card__inner ratio" style="--ratio-percent: 100%;">
+        
+        <div class="WI_productCard_img hover-load-trigger" data-handle="{{ card_product.handle }}">
+          <div class="WI_productCard_img_in">
+            <a href="{{ card_product.url }}" class="product-link"></a>
+            
+            <div class="WI_productCard_img_B_CSS">
+              {%- for image in card_product.images limit: image_limit -%}
+                <input 
+                  type="radio" 
+                  class="slide-input-{{ forloop.index }}"
+                  name="slider-{{ section_id }}-{{ card_product.id }}-main" 
+                  id="slide-{{ section_id }}-{{ card_product.id }}-{{ forloop.index }}-main" 
+                  {% if forloop.first %}checked{% endif %}
+                >
+              {%- endfor -%}
+
+              <div class="WI_slider_track">
+                {%- for image in card_product.images limit: image_limit -%}
+                  <div class="WI_slider_item">
+                    {% if forloop.first %}
+                      <img src="{{ image | image_url: width: 533 }}" 
+                           alt="{{ image.alt | escape }}" 
+                           loading="lazy" 
+                           class="img-main" 
+                           data-media-id="{{ image.id }}"
+                           width="533" height="{{ 533 | divided_by: image.aspect_ratio | ceil }}">
+                      
+                      {% if card_product.images[1] != blank %}
+                        <img src="{{ card_product.images[1] | image_url: width: 533 }}" 
+                             alt="" loading="lazy" class="img-secondary"
+                             width="533" height="{{ 533 | divided_by: card_product.images[1].aspect_ratio | ceil }}">
+                      {% endif %}
+                    {% else %}
+                      <img data-src="{{ image | image_url: width: 533 }}" 
+                           src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" 
+                           alt="{{ image.alt | escape }}" 
+                           class="img-main swiper-lazy-load" 
+                           data-media-id="{{ image.id }}"
+                           width="533" height="{{ 533 | divided_by: image.aspect_ratio | ceil }}">
+                    {% endif %}
+                  </div>
+                {%- endfor -%}
+              </div>
+
+              {% if image_count > 1 %}
+                <div class="WI_controls_CSS">
+                  <div class="WI_arrow_box WI_prev_btn">
+                    <div class="WI_arrow_disabled"><svg xmlns="http://www.w3.org/2000/svg" width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M7.41418 0.707153L1.41418 6.70715L7.41418 12.7072" stroke="#333333" stroke-width="2"/></svg></div>
+                    {% for i in (1..image_count) %}{% if i > 1 %}{% assign target = i | minus: 1 %}
+                      <label class="WI_arrow_label to-slide-{{ target }}" for="slide-{{ section_id }}-{{ card_product.id }}-{{ target }}-main"><svg xmlns="http://www.w3.org/2000/svg" width="9" height="14" viewBox="0 0 9 14" fill="none"><path d="M7.41418 0.707153L1.41418 6.70715L7.41418 12.7072" stroke="#333333" stroke-width="2"/></svg></label>
+                    {% endif %}{% endfor %}
+                  </div>
+                  <div class="WI_arrow_box WI_next_btn">
+                    <div class="WI_arrow_disabled"><svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.707031 0.707092L6.70703 6.70709L0.707031 12.7071" stroke="#333333" stroke-width="2"/></svg></div>
+                    {% for i in (1..image_count) %}{% if i < image_count %}{% assign target = i | plus: 1 %}
+                      <label class="WI_arrow_label to-slide-{{ target }}" for="slide-{{ section_id }}-{{ card_product.id }}-{{ target }}-main"><svg width="9" height="14" viewBox="0 0 9 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.707031 0.707092L6.70703 6.70709L0.707031 12.7071" stroke="#333333" stroke-width="2"/></svg></label>
+                    {% endif %}{% endfor %}
+                  </div>
+                </div>
+              {% endif %}
+            </div>
+
+            <ma-quickadd class="custom-card-btn">
+              <div class="ma_quickAdd_in">
+                <div class="ma_quickAdd_variant_in" data-quickoptionid="product-{{ section.id }}-{{ card_product.id }}">
+                  <button
+                    type="button"
+                    class="ma_Add_atc ma_quickAdd_atc svg"
+                    data-variantid="{{ card_product.variants[0].id }}"
+                    tabindex="0"
+                    {% unless card_product.variants[0].available %}disabled{% endunless %}
+                  >
+                    <span class="ma-span">
+                      {%- if card_product.available -%}
+                        {% render 'cart-line-svg' %}
+                      {%- else -%}
+                        {% render 'cart-line-svg' %}
+                      {%- endif -%}
+                    </span>
+                    <div class="loading-overlay__spinner hidden">
+                      <svg aria-hidden="true" focusable="false" role="presentation" class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                        <circle fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
+                      </svg>
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </ma-quickadd>
+            </div>
+          
+          <div class="badge-custom">
+            <div class="card__badge {{ settings.badge_position }}">
+
+              {%- if card_product.available == false -%}
+                <span class="badge badge--bottom-left color-{{ settings.sold_out_badge_color_scheme }}">
+                  {{- 'products.product.sold_out' | t -}}
+                </span>
+              {%- elsif card_product.compare_at_price > card_product.price and card_product.available -%}
+                <span class="badge badge--bottom-left color-{{ settings.sale_badge_color_scheme }}">
+                  {{- 'products.product.on_sale' | t -}}
+                </span>
+              {%- endif -%}
+
+              {%- if card_product.metafields.custom.limited_edition == true -%}
+                <span class="badge badge--bottom-left badge-limited-edition">
+                  LIMITED EDITION
+                </span>
+              {%- endif -%}
+{% if card_product.tags contains 'Pre Order' %}
+  <div class="pre-order-tag">pre order</div>
+{% endif %}
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card__content">
+        <div class="card__information">
+          <h3 class="card__heading h5">
+            <a href="{{ card_product.url }}" class="full-unstyled-link">
+              {{ card_product.title | escape }}
+            </a>
+          </h3>
+          
+          <div class="card-information">
+            {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+          </div>
+
+
+          {%- for option in card_product.options_with_values -%}
+            {%- assign option_name_downcase = option.name | downcase -%}
+            {%- if option_name_downcase == 'color' or option_name_downcase == 'colour' -%}
+              <div class="card-color-swatches">
+                {%- for value in option.values -%}
+                  
+                  {%- assign variant_media_id = nil -%}
+                  {%- assign variant_image_url = nil -%}
+                  
+                  {%- for variant in card_product.variants -%}
+                    {%- if variant.options contains value -%}
+                      {%- if variant.featured_media -%}
+                        {%- assign variant_media_id = variant.featured_media.id -%}
+                        {%- assign variant_image_url = variant.featured_media | image_url: width: 1000 -%}
+                      {%- endif -%}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+
+                  {%- assign bg_style = value | downcase | replace: ' ', '' -%}
+                  {%- if variant_image_url -%}
+                    {%- assign bg_style = "url('" | append: variant_image_url | append: "')" -%}
+                  {%- endif -%}
+
+                  <div class="card-swatch js-color-swatch"
+                       style="background-image: {{ bg_style }};"
+                       data-media-id="{{ variant_media_id }}" 
+                       data-image="{{ variant_image_url }}"
+                       data-value="{{ value }}"
+                       title="{{ value }}">
+                  </div>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+
+        </div>
+      </div>
+    </card-product>
+  </div>
+{%- endif -%}
+
