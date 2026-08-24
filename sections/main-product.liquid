@@ -757,6 +757,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
               {%- when 'variant_picker' -%}
                 {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
+              {%- when 'request_quote' -%}
+                <style>.product__info-wrapper .price,.product__info-wrapper .price-item,.product__info-wrapper .product-form__submit,.product__info-wrapper .shopify-payment-button,.product__info-wrapper .product-form__buttons.only-add-to-cart,.product__info-wrapper .product-form__buttons.only-buy-with-shop,.product__info-wrapper .quick-add,.product__info-wrapper .product-form__quantity,.product__info-wrapper quantity-input,.product__info-wrapper .quantity {display: none !important;}</style>
+                <div class="product-form__buttons" {{ block.shopify_attributes }}>
+                  <button type="button" class="button button--secondary button--full-width theme-btn request-quote-btn">
+                    {{ block.settings.button_text | default: 'Request a Quote' }}
+                  </button>
+                </div>
                           {%- when 'buy_buttons' -%}
                             <div class="buy-cc">
                                <div
@@ -1248,6 +1255,11 @@ document.addEventListener('DOMContentLoaded', () => {
       </modal-dialog>
     {%- endfor -%}
 
+    {%- assign block_types = section.blocks | map: 'type' -%}
+    {%- if block_types contains 'request_quote' -%}
+      {% render 'request-quote-modal' %}
+    {%- endif -%}
+
     {%- if product.media.size > 0 -%}
       <script src="{{ 'product-modal.js' | asset_url }}" defer="defer"></script>
       <script src="{{ 'media-gallery.js' | asset_url }}" defer="defer"></script>
@@ -1454,6 +1466,19 @@ document.addEventListener('DOMContentLoaded', () => {
           "label": "Show variant images in swatches",
           "info": "Replaces color swatches with the actual variant image."
         },
+      ]
+    },
+    {
+      "type": "request_quote",
+      "name": "Request Quote",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button Text",
+          "default": "Request a Quote"
+        }
       ]
     },
         {

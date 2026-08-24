@@ -205,7 +205,9 @@
           </h3>
           
           <div class="card-information">
-            {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+            {%- unless card_product.template_suffix == 'request-quote' -%}
+              {% render 'price', product: card_product, price_class: '', show_compare_at_price: true %}
+            {%- endunless -%}
           </div>
 
 

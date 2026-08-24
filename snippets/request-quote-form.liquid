@@ -1,0 +1,37 @@
+{% form 'contact', id: 'RequestQuoteForm' %}
+  {%- if form.posted_successfully? -%}
+    <p class="form-success" style="text-align:center;background-color: #d4edda; color: #155724; padding: 12px; border-radius: 4px; margin-bottom: 20px; font-size: 1.4rem;">
+      Thanks for requesting a quote!<br> We'll get back to you soon.
+    </p>
+  {%- elsif form.errors -%}
+    <div class="form-errors" style="color: red; margin-bottom: 20px;">
+      {{ form.errors | default_errors }}
+    </div>
+  {%- endif -%}
+
+  <!-- Hidden fields to capture Product Data -->
+  <input type="hidden" name="contact[Product Title]" id="QuoteProductTitle" value="{{ product.title | escape }}">
+  <input type="hidden" name="contact[Variant]" id="QuoteProductVariant" value="">
+  <input type="hidden" name="contact[Quantity]" id="QuoteProductQuantity" value="">
+  <input type="hidden" name="contact[Product URL]" value="{{ shop.url }}{{ product.url }}">
+
+  <div class="quote-form-group">
+    <label class="quote-form-label" for="QuoteName">Name</label>
+    <input class="quote-form-input" type="text" id="QuoteName" name="contact[Name]" required placeholder="Your Name">
+  </div>
+
+  <div class="quote-form-group">
+    <label class="quote-form-label" for="QuoteEmail">Email</label>
+    <input class="quote-form-input" type="email" id="QuoteEmail" name="contact[email]" required placeholder="Your Email">
+  </div>
+
+  <div class="quote-form-group">
+    <label class="quote-form-label" for="QuoteMessage">Message / Additional Details</label>
+    <textarea class="quote-form-input" id="QuoteMessage" name="contact[Message]" rows="4" required placeholder="Let us know what you need..."></textarea>
+  </div>
+
+  <button type="submit" class="quote-form-submit">
+    Submit Quote Request
+  </button>
+{% endform %}
+<script src="{{ 'request-quote.js' | asset_url }}" defer="defer"></script>

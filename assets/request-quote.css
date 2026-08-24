@@ -1,0 +1,131 @@
+/* Custom Request a Quote Modal Overlay */
+.quote-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.quote-modal-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Custom Modal Window */
+.quote-modal {
+  background: #ffffff;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 8px;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(30px);
+  transition: transform 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.quote-modal * {
+  box-sizing: border-box;
+}
+
+.quote-modal-overlay.is-open .quote-modal {
+  transform: translateY(0);
+}
+
+/* Header & Close Button */
+.quote-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.quote-modal-title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.quote-modal-close {
+  background: none;
+  border: none;
+  font-size: 2.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  color: #333;
+  transition: color 0.2s ease;
+}
+
+.quote-modal-close:hover {
+  color: #000;
+}
+
+/* Form Styles Override */
+.quote-modal .form-success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+}
+
+/* Custom Form Fields */
+.quote-form-group {
+  margin-bottom: 15px;
+}
+
+.quote-form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+  font-size: 1.4rem;
+  color: #333;
+}
+
+.quote-form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1.4rem;
+  font-family: inherit;
+  color: #333;
+}
+
+.quote-form-input:focus {
+  outline: none;
+  border-color: #000;
+}
+
+.quote-form-submit {
+  width: 100%;
+  padding: 14px;
+  background-color: #dc3545; /* Red to match your theme buttons */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.6rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.quote-form-submit:hover {
+  background-color: #c82333;
+}

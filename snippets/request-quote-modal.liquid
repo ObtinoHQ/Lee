@@ -1,0 +1,15 @@
+{{ 'request-quote.css' | asset_url | stylesheet_tag }}
+
+<div id="RequestQuoteModal" class="quote-modal-overlay" aria-hidden="true">
+  <div class="quote-modal" role="dialog" aria-modal="true">
+    <div class="quote-modal-header">
+      <h2 class="quote-modal-title">Request a Quote</h2>
+      <button type="button" class="quote-modal-close" aria-label="Close">&times;</button>
+    </div>
+    <div class="quote-modal-body">
+      {% render 'request-quote-form' %}
+    </div>
+  </div>
+</div>
+<script src="{{ 'request-quote.js' | asset_url }}" defer></script>
+

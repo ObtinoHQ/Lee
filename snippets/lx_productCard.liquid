@@ -7,12 +7,14 @@
             <a href="{{ product_obj.url }}" class="cart__drawer__re_info_left">
                 <h3>{{ product_obj.title }}</h3>
                 <div class="recom___price">
-                    {%- render 'price',
-                        product: product_obj,
-                        use_variant: true,
-                        show_badges: true,
-                        price_class: 'price--large'
-                    -%}
+                    {%- unless product_obj.template_suffix == 'request-quote' -%}
+                        {%- render 'price',
+                            product: product_obj,
+                            use_variant: true,
+                            show_badges: true,
+                            price_class: 'price--large'
+                        -%}
+                    {%- endunless -%}
                 </div>
             </a>
             {% comment %} {%- assign product_form_id = 'product-form-' | append: product.id -%}
