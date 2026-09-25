@@ -2298,6 +2298,14 @@ input[type='checkbox'] {
   background-color: #f8f8f8;
 }
 
+.header-wrapper:has(.header--transparent--cc) {
+  background-color: transparent;
+}
+
+body:has(.scrolled-past-header) .header-wrapper:has(.header--transparent--cc) {
+  background-color: #000;
+}
+
 .header-wrapper--border-bottom {
   border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.08);
 }
